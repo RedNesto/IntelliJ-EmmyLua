@@ -17,9 +17,9 @@
 package com.tang.intellij.lua.luacheck
 
 import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.xmlb.XmlSerializerUtil
 
@@ -42,8 +42,8 @@ class LuaCheckSettings : PersistentStateComponent<LuaCheckSettings> {
     }
 
     companion object {
-        @JvmStatic fun getInstance(): LuaCheckSettings {
-            return ServiceManager.getService(LuaCheckSettings::class.java)
+        @JvmStatic fun getInstance(project: Project): LuaCheckSettings {
+            return project.getService(LuaCheckSettings::class.java)
         }
     }
 }

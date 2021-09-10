@@ -121,7 +121,7 @@ private fun runLuaCheckInner(relativeFilePath: String,
                              file: PsiFile,
                              dir: VirtualFile,
                              builder: LuaCheckTreeBuilder) {
-    val settings = LuaCheckSettings.getInstance()
+    val settings = LuaCheckSettings.getInstance(file.project)
     val cmd = GeneralCommandLine(settings.luaCheck)
     val args = settings.luaCheckArgs
     cmd.addParameters(applyDefaultArgs(args))

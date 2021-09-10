@@ -20,6 +20,7 @@ import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.SearchableConfigurable;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.HoverHyperlinkLabel;
@@ -43,9 +44,10 @@ public class LuaCheckSettingsPanel implements SearchableConfigurable, Configurab
     private TextFieldWithBrowseButton myLuaCheck;
     private HoverHyperlinkLabel luaCheckReleasePageLink;
     private HoverHyperlinkLabel commandLineOptionsLink;
-    private LuaCheckSettings settings = LuaCheckSettings.getInstance();
+    private LuaCheckSettings settings;
 
-    public LuaCheckSettingsPanel() {
+    public LuaCheckSettingsPanel(Project project) {
+        settings = LuaCheckSettings.getInstance(project);
         myLuaCheck.setText(settings.getLuaCheck());
         FileChooserDescriptor luaCheckChooserDescriptor = new FileChooserDescriptor(true, false, false, false, false, false);
         myLuaCheck.addBrowseFolderListener(LuaBundle.message("ui.luacheck.chooser.title"), null, null, luaCheckChooserDescriptor);

@@ -27,7 +27,7 @@ class LuaCheckGroup : AnAction() {
         val project = event.getData(CommonDataKeys.PROJECT)!!
         val file = event.getData(CommonDataKeys.VIRTUAL_FILE)
         if (file != null) {
-            val settings = LuaCheckSettings.getInstance()
+            val settings = LuaCheckSettings.getInstance(project)
             if (settings.valid) {
                 runLuaCheck(project, file)
             } else {
