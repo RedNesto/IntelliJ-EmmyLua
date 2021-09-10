@@ -95,12 +95,14 @@ DOC_COMMENT=----*[^\r\n]*(\r?\n{LINE_WS}*----*[^\r\n]*)*
 //Strings
 DOUBLE_QUOTED_STRING=\"([^\\\"]|\\\S|\\[\r\n])*\"?  //\"([^\\\"\r\n]|\\[^\r\n])*\"?
 SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
+TICKED_STRING=`([^\\\`]|\\\S|\\[\r\n])*`?    //`([^\\`\r\n]|\\[^\r\n])*`?
 //[[]]
 LONG_STRING=\[=*\[[\s\S]*\]=*\]
 
 %state xSHEBANG
 %state xDOUBLE_QUOTED_STRING
 %state xSINGLE_QUOTED_STRING
+%state xTICKED_STRING
 %state xBLOCK_STRING
 %state xCOMMENT
 %state xBLOCK_COMMENT
@@ -188,6 +190,7 @@ LONG_STRING=\[=*\[[\s\S]*\]=*\]
 
   "\""                        { yybegin(xDOUBLE_QUOTED_STRING); yypushback(yylength()); }
   "'"                         { yybegin(xSINGLE_QUOTED_STRING); yypushback(yylength()); }
+  "`"                         { yybegin(xTICKED_STRING); yypushback(yylength()); } // FiveM compile-time hashes
 
   {ID}                        { return ID; }
   {NUMBER}                    { return NUMBER; }
@@ -210,4 +213,8 @@ LONG_STRING=\[=*\[[\s\S]*\]=*\]
 
 <xSINGLE_QUOTED_STRING> {
     {SINGLE_QUOTED_STRING}    { yybegin(YYINITIAL); return STRING; }
+}
+
+<xTICKED_STRING> {
+    {TICKED_STRING}    { yybegin(YYINITIAL); return STRING; }
 }
