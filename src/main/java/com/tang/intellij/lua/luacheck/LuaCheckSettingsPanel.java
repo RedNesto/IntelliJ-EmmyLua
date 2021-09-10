@@ -17,8 +17,8 @@
 package com.tang.intellij.lua.luacheck;
 
 import com.intellij.ide.BrowserUtil;
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.text.StringUtil;
@@ -47,6 +47,8 @@ public class LuaCheckSettingsPanel implements SearchableConfigurable, Configurab
 
     public LuaCheckSettingsPanel() {
         myLuaCheck.setText(settings.getLuaCheck());
+        FileChooserDescriptor luaCheckChooserDescriptor = new FileChooserDescriptor(true, false, false, false, false, false);
+        myLuaCheck.addBrowseFolderListener(LuaBundle.message("ui.luacheck.chooser.title"), null, null, luaCheckChooserDescriptor);
         myCmdLine.setText(settings.getLuaCheckArgs());
     }
 
