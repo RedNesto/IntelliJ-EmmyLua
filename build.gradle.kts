@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import de.undercouch.gradle.tasks.download.*
+import de.undercouch.gradle.tasks.download.Download
 import org.apache.tools.ant.taskdefs.condition.Os
 import java.io.ByteArrayOutputStream
 
@@ -36,7 +36,8 @@ data class BuildData(
     val explicitJavaDependency: Boolean = true,
     val bunch: String = ideaSDKShortVersion,
     // https://github.com/JetBrains/gradle-intellij-plugin/issues/403#issuecomment-542890849
-    val instrumentCodeCompilerVersion: String = ideaSDKVersion
+    val instrumentCodeCompilerVersion: String = ideaSDKVersion,
+    val pluginVerifierIdeVersions: Set<String> = setOf(ideaSDKVersion)
 )
 
 val buildDataList = listOf(
@@ -52,17 +53,17 @@ val buildDataList = listOf(
         ideaSDKVersion = "211.7142.45",
         sinceBuild = "211",
         untilBuild = "211.*",
-        bunch = "203"
     ),
     BuildData(
         ideaSDKShortVersion = "203",
-        ideaSDKVersion = "IC-203.5981.155",
+        ideaSDKVersion = "203.5981.155",
         sinceBuild = "203",
-        untilBuild = "203.*"
+        untilBuild = "203.*",
+        pluginVerifierIdeVersions = setOf("203.8084.24")
     ),
     BuildData(
         ideaSDKShortVersion = "202",
-        ideaSDKVersion = "IC-202.6397.94",
+        ideaSDKVersion = "202.6397.94",
         sinceBuild = "202",
         untilBuild = "202.*",
         jvmTarget = "1.6",
@@ -70,7 +71,7 @@ val buildDataList = listOf(
     ),
     BuildData(
         ideaSDKShortVersion = "201",
-        ideaSDKVersion = "IC-201.8743.12",
+        ideaSDKVersion = "201.8743.12",
         sinceBuild = "201",
         untilBuild = "201.*",
         jvmTarget = "1.6",
@@ -78,7 +79,7 @@ val buildDataList = listOf(
     ),
     BuildData(
         ideaSDKShortVersion = "193",
-        ideaSDKVersion = "IC-193.5233.102",
+        ideaSDKVersion = "193.5233.102",
         sinceBuild = "193",
         untilBuild = "194.*",
         jvmTarget = "1.6",
@@ -86,25 +87,27 @@ val buildDataList = listOf(
     ),
     BuildData(
         ideaSDKShortVersion = "182",
-        ideaSDKVersion = "IC-182.2371.4",
+        ideaSDKVersion = "182.2371.4",
         sinceBuild = "182",
         untilBuild = "193.*",
         explicitJavaDependency = false,
         jvmTarget = "1.6",
-        targetCompatibilityLevel = JavaVersion.VERSION_1_8
+        targetCompatibilityLevel = JavaVersion.VERSION_1_8,
+        pluginVerifierIdeVersions = setOf("192.7142.36", "191.8026.42", "183.6156.11", /*"182.5262.2"*/"182.2371.4")
     ),
     BuildData(
         ideaSDKShortVersion = "172",
-        ideaSDKVersion = "IC-172.4574.19",
+        ideaSDKVersion = "172.4574.19",
         sinceBuild = "172",
         untilBuild = "181.*",
         explicitJavaDependency = false,
         jvmTarget = "1.6",
-        targetCompatibilityLevel = JavaVersion.VERSION_1_8
+        targetCompatibilityLevel = JavaVersion.VERSION_1_8,
+        pluginVerifierIdeVersions = setOf("181.5684.4", "173.4710.11", "172.4574.19")
     ),
     BuildData(
         ideaSDKShortVersion = "171",
-        ideaSDKVersion = "IC-171.4694.73",
+        ideaSDKVersion = "171.4694.73",
         sinceBuild = "171",
         untilBuild = "171.*",
         explicitJavaDependency = false,
@@ -123,13 +126,17 @@ val resDir = "src/main/resources"
 
 val isWin = Os.isFamily(Os.FAMILY_WINDOWS)
 
-val isCI = System.getenv("APPVEYOR") != null
+val isAppVeyor = System.getenv("APPVEYOR") != null
+val isGithubActions = System.getenv("GITHUB_ACTIONS") != null
+val isCI = isAppVeyor || isGithubActions
 
 // CI
 if (isCI) {
-    version =
-        System.getenv("APPVEYOR_REPO_TAG_NAME") ?:
-        System.getenv("APPVEYOR_BUILD_VERSION")
+    if (isAppVeyor) {
+        version = System.getenv("APPVEYOR_REPO_TAG_NAME") ?: System.getenv("APPVEYOR_BUILD_VERSION")
+    } else if (isGithubActions) {
+        version = System.getenv("GITHUB_RUN_NUMBER")
+    }
     exec {
         executable = "git"
         args("config", "--global", "user.email", "love.tangzx@qq.com")
@@ -214,7 +221,6 @@ project(":") {
     repositories {
         maven(url = "https://www.jetbrains.com/intellij-repository/releases")
         mavenCentral()
-        jcenter()
     }
 
     dependencies {
@@ -234,7 +240,7 @@ project(":") {
         }
     }
 
-    configure<JavaPluginConvention> {
+    configure<JavaPluginExtension> {
         sourceCompatibility = buildVersionData.targetCompatibilityLevel
         targetCompatibility = buildVersionData.targetCompatibilityLevel
     }
@@ -246,7 +252,14 @@ project(":") {
         version.set(buildVersionData.ideaSDKVersion)
         localPath.set(System.getenv("IDEA_HOME_${buildVersionData.ideaSDKShortVersion}"))
         sandboxDir.set("${project.buildDir}/${buildVersionData.ideaSDKShortVersion}/idea-sandbox")
-        plugins.set(listOf("grazie"))
+        val requiredPlugins = mutableListOf<String>()
+        if (buildVersionData.ideaSDKShortVersion.toInt() >= 192) {
+            requiredPlugins.add("java")
+        }
+        if (buildVersionData.ideaSDKShortVersion.toInt() >= 212) {
+            requiredPlugins.add("grazie")
+        }
+        plugins.set(requiredPlugins)
     }
 
     task("bunch") {
@@ -297,6 +310,10 @@ project(":") {
 
         instrumentCode {
             compilerVersion.set(buildVersionData.instrumentCodeCompilerVersion)
+        }
+
+        runPluginVerifier {
+            ideVersions.addAll(buildVersionData.pluginVerifierIdeVersions)
         }
 
         withType<org.jetbrains.intellij.tasks.PrepareSandboxTask> {
