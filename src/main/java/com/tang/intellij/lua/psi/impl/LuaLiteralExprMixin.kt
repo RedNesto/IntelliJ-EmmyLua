@@ -28,7 +28,6 @@ import com.tang.intellij.lua.psi.LuaLiteralExpr
 import com.tang.intellij.lua.psi.LuaLiteralKind
 import com.tang.intellij.lua.psi.kind
 import com.tang.intellij.lua.stubs.LuaLiteralExprStub
-import java.lang.StringBuilder
 
 internal class TextEscaper(host: LuaLiteralExprMixin) : LiteralTextEscaper<LuaLiteralExprMixin>(host) {
     override fun isOneLine(): Boolean {
@@ -69,10 +68,6 @@ abstract class LuaLiteralExprMixin
     }
 
     override fun isValidHost(): Boolean {
-        if (kind == LuaLiteralKind.String) {
-            val content = LuaString.getContent(text)
-            return content.start >= 2
-        }
-        return false
+        return kind == LuaLiteralKind.String
     }
 }

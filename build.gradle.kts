@@ -245,6 +245,7 @@ project(":") {
         version.set(buildVersionData.ideaSDKVersion)
         localPath.set(System.getenv("IDEA_HOME_${buildVersionData.ideaSDKShortVersion}"))
         sandboxDir.set("${project.buildDir}/${buildVersionData.ideaSDKShortVersion}/idea-sandbox")
+        plugins.set(listOf("grazie"))
     }
 
     task("bunch") {
