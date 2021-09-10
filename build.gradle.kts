@@ -162,6 +162,7 @@ task("downloadEmmyDebugger", type = Download::class) {
     ))
 
     dest("temp")
+    onlyIfModified(true)
 }
 
 task("unzipEmmyDebugger", type = Copy::class) {
