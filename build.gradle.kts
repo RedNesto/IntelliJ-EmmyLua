@@ -21,7 +21,7 @@ import java.io.ByteArrayOutputStream
 plugins {
     id("org.jetbrains.intellij").version("1.5.3")
     id("org.jetbrains.kotlin.jvm").version("1.6.0")
-    id("de.undercouch.download").version("3.4.3")
+    id("de.undercouch.download").version("5.0.4")
 }
 
 data class BuildData(
