@@ -27,6 +27,7 @@ import com.tang.intellij.lua.project.LuaSettings
 import com.tang.intellij.lua.psi.*
 import com.tang.intellij.lua.psi.impl.LuaNameExprMixin
 import com.tang.intellij.lua.psi.search.LuaShortNamesManager
+import com.tang.intellij.lua.reference.LuaNameReference
 import com.tang.intellij.lua.search.GuardType
 import com.tang.intellij.lua.search.SearchContext
 
@@ -183,6 +184,33 @@ private fun LuaCallExpr.infer(context: SearchContext): ITy {
             return file.guessType(context)
 
         return Ty.UNKNOWN
+    }
+
+    val args = this.argList
+    val nameRef = (this.expr.reference as? LuaNameReference)
+    val func = (nameRef?.resolve(context) as? LuaFuncDef)
+    val matchingOverload = func?.overloads?.firstOrNull {
+        // TODO: improve this dumb overload resolution by following the actual overloading rules
+        val params = it.params
+        if (params.size != args.size) {
+            return@firstOrNull false
+        }
+
+        for ((i, param) in params.withIndex()) {
+            val givenArg = args[i]
+            if (!givenArg.guessType(context).subTypeOf(param.ty, context, false)) {
+                return@firstOrNull false
+            }
+        }
+
+        return@firstOrNull true
+    }
+
+    if (matchingOverload != null) {
+        val overloadReturnTy = getReturnTy(matchingOverload, context)
+        if (overloadReturnTy != null) {
+            return overloadReturnTy
+        }
     }
 
     var ret: ITy = Ty.UNKNOWN
