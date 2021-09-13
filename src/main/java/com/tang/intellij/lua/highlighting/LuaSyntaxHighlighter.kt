@@ -90,6 +90,7 @@ class LuaSyntaxHighlighter : SyntaxHighlighterBase() {
             //primitive types
             fillMap(ourMap1, LuaHighlightingData.NUMBER, LuaTypes.NUMBER)
             fillMap(ourMap1, LuaHighlightingData.STRING, LuaTypes.STRING)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaTypes.HASH)
             fillMap(ourMap1, PRIMITIVE_TYPE_SET, LuaHighlightingData.PRIMITIVE_TYPE)
 
             //region

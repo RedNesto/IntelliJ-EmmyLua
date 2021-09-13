@@ -200,7 +200,7 @@ object LuaExpressionParser {
                 m.done(CALL_EXPR)
                 return m
             }
-            STRING -> { // singleArg ::= tableExpr | stringExpr
+            STRING, HASH -> { // singleArg ::= tableExpr | stringExpr
                 val stringExpr = b.mark()
                 b.advanceLexer()
                 stringExpr.done(LITERAL_EXPR)
@@ -241,7 +241,7 @@ object LuaExpressionParser {
                 m.done(NAME_EXPR)
                 return Pair(m, NAME_EXPR)
             }
-            NUMBER, STRING, NIL, TRUE, FALSE, ELLIPSIS -> { //literalExpr ::= nil | false | true | NUMBER | STRING | "..."
+            NUMBER, STRING, HASH, NIL, TRUE, FALSE, ELLIPSIS -> { //literalExpr ::= nil | false | true | NUMBER | STRING | "..."
                 val m = b.mark()
                 b.advanceLexer()
                 m.done(LITERAL_EXPR)

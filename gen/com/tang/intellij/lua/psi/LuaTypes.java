@@ -115,6 +115,7 @@ public interface LuaTypes {
   IElementType SHEBANG_CONTENT = LuaParserDefinitionKt.createToken("SHEBANG_CONTENT");
   IElementType SHORT_COMMENT = LuaParserDefinitionKt.createToken("SHORT_COMMENT");
   IElementType STRING = LuaParserDefinitionKt.createToken("STRING");
+  IElementType HASH = LuaParserDefinitionKt.createToken("HASH");
   IElementType THEN = LuaParserDefinitionKt.createToken("then");
   IElementType TRUE = LuaParserDefinitionKt.createToken("true");
   IElementType UNTIL = LuaParserDefinitionKt.createToken("until");

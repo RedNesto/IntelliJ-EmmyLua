@@ -216,5 +216,5 @@ LONG_STRING=\[=*\[[\s\S]*\]=*\]
 }
 
 <xTICKED_STRING> {
-    {TICKED_STRING}    { yybegin(YYINITIAL); return STRING; }
+    {TICKED_STRING}    { yybegin(YYINITIAL); return HASH; }
 }

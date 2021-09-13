@@ -35,7 +35,7 @@ data class ComputeResult(val kind: ComputeKind,
 }
 
 enum class ComputeKind {
-    String, Bool, Number, Nil, Other
+    String, Hash, Bool, Number, Nil, Other
 }
 
 class ExpressionUtil {
@@ -46,6 +46,7 @@ class ExpressionUtil {
                 is LuaLiteralExpr -> {
                     when (expr.kind) {
                         LuaLiteralKind.String -> ComputeResult(ComputeKind.String, false, 0f, expr.stringValue)
+                        LuaLiteralKind.Hash -> ComputeResult(ComputeKind.Hash, false, 0f, "") // TODO get hash by string value
                         LuaLiteralKind.Bool -> ComputeResult(ComputeKind.Bool, expr.boolValue)
                         LuaLiteralKind.Number -> ComputeResult(ComputeKind.Number, false, expr.numberValue)
                         LuaLiteralKind.Nil -> ComputeResult(ComputeKind.Nil, false, 0f, "nil")

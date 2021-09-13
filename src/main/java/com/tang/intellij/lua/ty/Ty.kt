@@ -196,6 +196,7 @@ abstract class Ty(override val kind: TyKind) : ITy {
         val VOID = TyVoid()
         val BOOLEAN = TyPrimitive(TyPrimitiveKind.Boolean, "boolean")
         val STRING = TyPrimitiveClass(TyPrimitiveKind.String, "string")
+        val HASH = TyPrimitiveClass(TyPrimitiveKind.Number, "Hash")
         val NUMBER = TyPrimitive(TyPrimitiveKind.Number, "number")
         val TABLE = TyPrimitive(TyPrimitiveKind.Table, "table")
         val FUNCTION = TyPrimitive(TyPrimitiveKind.Function, "function")

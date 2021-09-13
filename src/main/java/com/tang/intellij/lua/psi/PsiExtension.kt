@@ -283,6 +283,7 @@ val LuaFuncBodyOwner.tyParams: Array<TyParameter> get() {
 
 enum class LuaLiteralKind {
     String,
+    Hash,
     Bool,
     Number,
     Nil,
@@ -303,6 +304,7 @@ val LuaLiteralExpr.kind: LuaLiteralKind get() {
 
     return when(node.firstChildNode.elementType) {
         LuaTypes.STRING -> LuaLiteralKind.String
+        LuaTypes.HASH -> LuaLiteralKind.Hash
         LuaTypes.TRUE -> LuaLiteralKind.Bool
         LuaTypes.FALSE -> LuaLiteralKind.Bool
         LuaTypes.NIL -> LuaLiteralKind.Nil

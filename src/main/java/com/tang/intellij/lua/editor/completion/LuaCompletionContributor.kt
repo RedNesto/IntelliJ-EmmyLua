@@ -107,7 +107,7 @@ class LuaCompletionContributor : CompletionContributor() {
     }
 
     companion object {
-        private val IGNORE_SET = TokenSet.create(LuaTypes.STRING, LuaTypes.NUMBER, LuaTypes.CONCAT)
+        private val IGNORE_SET = TokenSet.create(LuaTypes.STRING, LuaTypes.HASH, LuaTypes.NUMBER, LuaTypes.CONCAT)
 
         private val SHOW_CLASS_FIELD = psiElement(LuaTypes.ID)
                 .withParent(LuaIndexExpr::class.java)

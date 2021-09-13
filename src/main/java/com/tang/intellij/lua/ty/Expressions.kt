@@ -334,6 +334,7 @@ private fun LuaLiteralExpr.infer(): ITy {
     return when (this.kind) {
         LuaLiteralKind.Bool -> Ty.BOOLEAN
         LuaLiteralKind.String -> Ty.STRING
+        LuaLiteralKind.Hash -> Ty.HASH
         LuaLiteralKind.Number -> Ty.NUMBER
         LuaLiteralKind.Varargs -> {
             val o = PsiTreeUtil.getParentOfType(this, LuaFuncBodyOwner::class.java)
