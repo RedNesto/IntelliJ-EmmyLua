@@ -18,12 +18,26 @@ package com.tang.intellij.lua.codeInsight.inspection
 
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.observable.properties.GraphPropertyImpl.Companion.graphProperty
+import com.intellij.openapi.observable.properties.PropertyGraph
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.ui.layout.panel
 import com.tang.intellij.lua.psi.*
 import com.tang.intellij.lua.search.SearchContext
 import com.tang.intellij.lua.ty.*
+import javax.swing.JComponent
 
 class MatchFunctionSignatureInspection : StrictInspection() {
+
+    private val graph = PropertyGraph()
+    private var ignoreAnonymousTypesProperty = graph.graphProperty { false }
+    var ignoreAnonymousTypes by ignoreAnonymousTypesProperty // Public for built-in options serialization
+    private var ignoreUnknownFunctionsProperty = graph.graphProperty { false }
+    var ignoreUnknownFunctions by ignoreUnknownFunctionsProperty
+    private var strictParametersCountProperty = graph.graphProperty { true }
+    var strictParametersCount by strictParametersCountProperty // Public for built-in options serialization
+
     data class ConcreteTypeInfo(val param: LuaExpr, val ty: ITy)
     override fun buildVisitor(myHolder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor =
             object : LuaVisitor() {
@@ -59,10 +73,10 @@ class MatchFunctionSignatureInspection : StrictInspection() {
                         val parentType = prefixExpr.guessParentType(searchContext)
                         if (parentType is TyClass) {
                             val fType = prefixExpr.name?.let { parentType.findSuperMember(it, searchContext) }
-                            if (fType == null)
+                            if (fType == null && !ignoreUnknownFunctions)
                                 myHolder.registerProblem(o, "Unknown function '%s'.".format(prefixExpr.lastChild.text))
                         }
-                    } else if (type == Ty.NIL) {
+                    } else if (type == Ty.NIL && !ignoreUnknownFunctions) {
                         myHolder.registerProblem(o, "Unknown function '%s'.".format(prefixExpr.lastChild.text))
                     }
                 }
@@ -90,9 +104,16 @@ class MatchFunctionSignatureInspection : StrictInspection() {
                             return@processArgs true
                         }
 
+                        val arg = call.argList[nArgs - 1]
+                        if (!strictParametersCount && arg is LuaClosureExpr && nArgs >= call.argList.size) {
+                            return@processArgs true
+                        }
+
                         val type = typeInfo.ty
-                        if (!type.subTypeOf(pi.ty, searchContext, false))
-                            myHolder.registerProblem(typeInfo.param, "Type mismatch. Required: '${pi.ty}' Found: '$type'")
+                        if (!type.subTypeOf(pi.ty, searchContext, false) && (!ignoreAnonymousTypes || !(type.isAnonymous || pi.ty.isAnonymous))) {
+                            val problemElement: PsiElement = if (arg is LuaClosureExpr) (arg as LuaFuncBodyOwner).firstChild else typeInfo.param
+                            myHolder.registerProblem(problemElement, "Type mismatch. Required: '${pi.ty}' Found: '$type'")
+                        }
                         true
                     }
                     if (nArgs < concreteParams.size && !signature.hasVarargs()) {
@@ -101,5 +122,13 @@ class MatchFunctionSignatureInspection : StrictInspection() {
                         }
                     }
                 }
-            }
+        }
+
+    override fun createOptionsPanel(): JComponent {
+        return panel {
+            row { checkBox("Ignore anonymous types", ignoreAnonymousTypesProperty) }
+            row { checkBox("Ignore unknown functions", ignoreUnknownFunctionsProperty) }
+            row { checkBox("Strict closure parameters count", strictParametersCountProperty) }
+        }
+    }
 }

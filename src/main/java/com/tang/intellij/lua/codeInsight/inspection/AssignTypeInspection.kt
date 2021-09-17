@@ -18,15 +18,25 @@ package com.tang.intellij.lua.codeInsight.inspection
 
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.observable.properties.GraphPropertyImpl.Companion.graphProperty
+import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.ui.layout.panel
 import com.tang.intellij.lua.psi.LuaAssignStat
 import com.tang.intellij.lua.psi.LuaIndexExpr
 import com.tang.intellij.lua.psi.LuaVisitor
 import com.tang.intellij.lua.search.SearchContext
 import com.tang.intellij.lua.ty.Ty
 import com.tang.intellij.lua.ty.TyClass
+import com.tang.intellij.lua.ty.isAnonymous
+import javax.swing.JComponent
 
 class AssignTypeInspection : StrictInspection() {
+
+    private val graph = PropertyGraph()
+    private var ignoreAnonymousTypesProperty = graph.graphProperty { false }
+    var ignoreAnonymousTypes by ignoreAnonymousTypesProperty // Public for built-in options serialization
+
     override fun buildVisitor(myHolder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor =
             object : LuaVisitor() {
                 override fun visitAssignStat(o: LuaAssignStat) {
@@ -70,7 +80,7 @@ class AssignTypeInspection : StrictInspection() {
                                 if (o.comment == null) {
                                     val fieldType = field.guessType(searchContext)
 
-                                    if (!valueType.subTypeOf(fieldType, searchContext, false)) {
+                                    if (!valueType.subTypeOf(fieldType, searchContext, false) && (!ignoreAnonymousTypes || !(fieldType.isAnonymous || valueType.isAnonymous))) {
                                         myHolder.registerProblem(value, "Type mismatch. Required: '%s' Found: '%s'".format(fieldType, valueType))
                                     }
                                 }
@@ -79,4 +89,10 @@ class AssignTypeInspection : StrictInspection() {
                     }
                 }
             }
+
+    override fun createOptionsPanel(): JComponent {
+        return panel {
+            row { checkBox("Ignore anonymous types", ignoreAnonymousTypesProperty) }
+        }
+    }
 }
