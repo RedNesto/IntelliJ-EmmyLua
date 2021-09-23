@@ -29,6 +29,7 @@ import com.intellij.util.SmartList
 import com.tang.intellij.lua.ext.ILuaFileResolver
 import com.tang.intellij.lua.project.LuaSourceRootManager
 import java.io.File
+import java.nio.file.Path
 
 /**
  *
@@ -36,19 +37,19 @@ import java.io.File
  */
 object LuaFileUtil {
 
-    val pluginFolder: File?
+    val pluginFolder: Path?
         get() {
             val descriptor = PluginManagerCore.getPlugin(PluginId.getId("com.tang"))
-            return descriptor?.path
+            return descriptor?.pluginPath
         }
 
     val pluginVirtualDirectory: VirtualFile?
         get() {
             val descriptor = PluginManagerCore.getPlugin(PluginId.getId("com.tang"))
             if (descriptor != null) {
-                val pluginPath = descriptor.path
+                val pluginPath = descriptor.pluginPath
 
-                val url = VfsUtil.pathToUrl(pluginPath.absolutePath)
+                val url = VfsUtil.pathToUrl(pluginPath.toAbsolutePath().toString())
 
                 return VirtualFileManager.getInstance().findFileByUrl(url)
             }

@@ -16,46 +16,26 @@
 
 package com.tang.intellij.lua.debugger.app;
 
-import com.intellij.execution.configurations.ConfigurationFactory;
-import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.ConfigurationTypeUtil;
+import com.intellij.execution.configurations.RunConfiguration;
+import com.intellij.execution.configurations.SimpleConfigurationType;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.NotNullLazyValue;
 import com.tang.intellij.lua.lang.LuaIcons;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-
 /**
- *
  * Created by tangzx on 2017/5/7.
  */
-public class LuaAppConfigurationType implements ConfigurationType {
+public class LuaAppConfigurationType extends SimpleConfigurationType {
 
-    private LuaAppConfigurationFactory factory = new LuaAppConfigurationFactory(this);
-
-    @Override
-    public String getDisplayName() {
-        return "Lua Application";
+    protected LuaAppConfigurationType() {
+        super("lua.app", "Lua Application", "Lua Application Runner", NotNullLazyValue.createValue(() -> LuaIcons.FILE));
     }
 
     @Override
-    public String getConfigurationTypeDescription() {
-        return "Lua Application Runner";
-    }
-
-    @Override
-    public Icon getIcon() {
-        return LuaIcons.FILE;
-    }
-
-    @NotNull
-    @Override
-    public String getId() {
-        return "lua.app";
-    }
-
-    @Override
-    public ConfigurationFactory[] getConfigurationFactories() {
-        return new ConfigurationFactory[] { factory };
+    public @NotNull RunConfiguration createTemplateConfiguration(@NotNull Project project) {
+        return new LuaAppRunConfiguration(project, this);
     }
 
     @NotNull

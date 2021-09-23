@@ -29,7 +29,7 @@ import static com.tang.intellij.lua.codeInsight.postfix.LuaPostfixUtils.selector
  */
 public class LuaPrintPostfixTemplate extends StringBasedPostfixTemplate {
     public LuaPrintPostfixTemplate() {
-        super("print", "print(expr)", selectorTopmost());
+        super("print", "print(expr)", selectorTopmost(), null);
     }
 
     @Nullable

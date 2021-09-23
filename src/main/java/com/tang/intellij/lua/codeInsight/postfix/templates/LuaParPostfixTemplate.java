@@ -30,7 +30,7 @@ import static com.tang.intellij.lua.codeInsight.postfix.LuaPostfixUtils.selector
  */
 public class LuaParPostfixTemplate extends StringBasedPostfixTemplate {
     public LuaParPostfixTemplate() {
-        super("par", "(expr)", selectorAllExpressionsWithCurrentOffset(LuaPostfixUtils.IS_NON_PAR));
+        super("par", "(expr)", selectorAllExpressionsWithCurrentOffset(LuaPostfixUtils.IS_NON_PAR), null);
     }
 
     @Nullable

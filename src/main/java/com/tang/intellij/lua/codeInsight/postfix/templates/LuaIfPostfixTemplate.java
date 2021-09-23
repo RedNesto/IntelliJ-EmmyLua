@@ -29,7 +29,7 @@ import static com.tang.intellij.lua.codeInsight.postfix.LuaPostfixUtils.selector
  */
 public class LuaIfPostfixTemplate extends StringBasedPostfixTemplate {
     public LuaIfPostfixTemplate() {
-        super("if", "if expr then end", selectorTopmost());
+        super("if", "if expr then end", selectorTopmost(), null);
     }
 
     @Nullable

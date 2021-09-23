@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package com.tang.intellij.lua.debugger.app
+package com.tang.intellij.lua.codeInsight
 
-import com.intellij.execution.configurations.ConfigurationType
-import com.intellij.execution.configurations.RunConfiguration
-import com.intellij.openapi.project.Project
-import com.tang.intellij.lua.debugger.LuaConfigurationFactory
+import com.intellij.codeInsight.template.impl.DefaultLiveTemplatesProvider
 
 /**
  *
- * Created by tangzx on 2017/5/7.
+ * Created by tangzx on 2017/2/11.
  */
-class LuaAppConfigurationFactory(type: ConfigurationType) : LuaConfigurationFactory(type) {
+class LuaLiveTemplatesProvider : DefaultLiveTemplatesProvider {
 
-    override fun createTemplateConfiguration(project: Project): RunConfiguration {
-        return LuaAppRunConfiguration(project, this)
+    override fun getDefaultLiveTemplateFiles() = DEFAULT_TEMPLATES
+
+    override fun getHiddenLiveTemplateFiles(): Array<String>? = emptyArray()
+
+    companion object {
+        private val DEFAULT_TEMPLATES = arrayOf("/liveTemplates/lua")
     }
 }

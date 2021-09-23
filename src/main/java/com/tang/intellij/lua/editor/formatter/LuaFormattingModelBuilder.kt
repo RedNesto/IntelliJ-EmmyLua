@@ -32,12 +32,13 @@ import com.tang.intellij.lua.psi.LuaTypes.*
  * Created by tangzx on 2016/12/3.
  */
 class LuaFormattingModelBuilder : FormattingModelBuilder {
-    override fun createModel(element: PsiElement, settings: CodeStyleSettings): FormattingModel {
+    override fun createModel(formattingContext: FormattingContext): FormattingModel {
+        val settings = formattingContext.codeStyleSettings
         val commonSettings = settings.getCommonSettings(LuaLanguage.INSTANCE)
         val luaSettings = settings.getCustomSettings(LuaCodeStyleSettings::class.java)
         val ctx = LuaFormatContext(commonSettings, luaSettings, createSpaceBuilder(settings))
-        return FormattingModelProvider.createFormattingModelForPsiFile(element.containingFile,
-                LuaScriptBlock(element,
+        return FormattingModelProvider.createFormattingModelForPsiFile(formattingContext.containingFile,
+                LuaScriptBlock(formattingContext.psiElement,
                         Wrap.createWrap(WrapType.NONE, false),
                         Alignment.createAlignment(),
                         Indent.getNoneIndent(),

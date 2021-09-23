@@ -30,7 +30,7 @@ import static com.tang.intellij.lua.codeInsight.postfix.LuaPostfixUtils.selector
  */
 public class LuaForPPostfixTemplate extends StringBasedPostfixTemplate {
     public LuaForPPostfixTemplate() {
-        super("for_p", "for i, v in pairs(expr) do end", selectorTopmost(Conditions.alwaysTrue()));
+        super("for_p", "for i, v in pairs(expr) do end", selectorTopmost(Conditions.alwaysTrue()), null);
     }
 
     @Nullable

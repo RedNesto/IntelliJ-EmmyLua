@@ -29,7 +29,7 @@ import static com.tang.intellij.lua.codeInsight.postfix.LuaPostfixUtils.selector
  */
 public class LuaCheckIfNotNilPostfixTemplate extends StringBasedPostfixTemplate {
     public LuaCheckIfNotNilPostfixTemplate() {
-        super("if_not_nil", "if expr ~= nil then end", selectorTopmost());
+        super("if_not_nil", "if expr ~= nil then end", selectorTopmost(), null);
     }
 
     @Nullable

@@ -16,6 +16,8 @@
 
 package com.tang.intellij.lua.project
 
+import com.intellij.openapi.application.Application
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.components.State
@@ -106,7 +108,7 @@ class LuaSettings : PersistentStateComponent<LuaSettings> {
     companion object {
 
         val instance: LuaSettings
-            get() = ServiceManager.getService(LuaSettings::class.java)
+            get() = ApplicationManager.getApplication().getService(LuaSettings::class.java)
 
         fun isConstructorName(name: String): Boolean {
             return instance.constructorNames.contains(name)

@@ -31,7 +31,7 @@ import static com.tang.intellij.lua.codeInsight.postfix.LuaPostfixUtils.selector
  */
 public class LuaDecreasePostfixTemplate extends StringBasedPostfixTemplate {
     public LuaDecreasePostfixTemplate() {
-        super("decrease", "expr = expr - value", selectorTopmost());
+        super("decrease", "expr = expr - value", selectorTopmost(), null);
     }
 
     @Nullable
