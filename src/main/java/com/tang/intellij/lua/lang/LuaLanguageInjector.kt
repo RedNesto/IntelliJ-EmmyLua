@@ -22,8 +22,13 @@ import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.parentOfType
 import com.tang.intellij.lua.comment.psi.LuaDocTagLan
+import com.tang.intellij.lua.comment.psi.LuaDocVisitor
+import com.tang.intellij.lua.comment.psi.api.LuaComment
 import com.tang.intellij.lua.lang.type.LuaString
+import com.tang.intellij.lua.psi.LuaAssignStat
+import com.tang.intellij.lua.psi.LuaCallExpr
 import com.tang.intellij.lua.psi.LuaCommentOwner
 import com.tang.intellij.lua.psi.LuaLiteralExpr
 
@@ -38,13 +43,28 @@ class LuaLanguageInjector : LanguageInjector {
                     if (lanDef != null) {
                         val lan = Language.findLanguageByID(lanDef.id?.text)
                         if (lan != null) {
-                            val le:LuaLiteralExpr = injectionHost
+                            val le: LuaLiteralExpr = injectionHost
                             val content = LuaString.getContent(le.text)
                             val range = TextRange(content.start, content.end)
                             languagePlaces.addPlace(lan, range, null, null)
                         }
                     }
                 }
+            }
+            val parent = (injectionHost as LuaLiteralExpr).parent?.parent
+            if (parent is LuaCallExpr) {
+                val luaAssign = parent.expr.reference?.resolve()?.parentOfType<LuaAssignStat>()
+                val comment = PsiTreeUtil.getChildOfType(luaAssign, LuaComment::class.java)
+                comment?.acceptChildren(object : LuaDocVisitor() {
+                    override fun visitTagLan(o: LuaDocTagLan) {
+                        val text = o.id?.text
+                        val language = Language.findLanguageByID(text) ?: return
+                        val le: LuaLiteralExpr = injectionHost
+                        val content = LuaString.getContent(le.text)
+                        val range = TextRange(content.start, content.end)
+                        languagePlaces.addPlace(language, range, null, null)
+                    }
+                })
             }
         }
     }
