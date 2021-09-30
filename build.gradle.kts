@@ -20,7 +20,7 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     id("org.jetbrains.intellij").version("1.5.3")
-    id("org.jetbrains.kotlin.jvm").version("1.6.0")
+    id("org.jetbrains.kotlin.jvm").version("1.6.21")
     id("de.undercouch.download").version("5.0.4")
 }
 
@@ -46,7 +46,6 @@ val buildDataList = listOf(
         ideaSDKVersion = "213.5744.223",
         sinceBuild = "212",
         untilBuild = "221.*",
-        bunch = "212"
     ),
     BuildData(
         ideaSDKShortVersion = "211",
