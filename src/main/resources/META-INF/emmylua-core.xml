@@ -165,6 +165,7 @@
 
         <!--lua settings-->
         <applicationService serviceImplementation="com.tang.intellij.lua.project.LuaSettings"/>
+        <projectService serviceImplementation="com.tang.intellij.lua.project.LuaSourceRootManager"/>
         <projectConfigurable groupId="language"
                                  displayName="EmmyLua"
                                  id="preferences.Lua"
@@ -316,19 +317,6 @@
                 groupName="Lua > Emmy doc"
                 implementationClass="com.tang.intellij.lua.codeInsight.inspection.doc.UnresolvedClassInspection"/>
     </extensions>
-
-    <application-components>
-        <component>
-            <implementation-class>com.tang.intellij.lua.project.StdSDK</implementation-class>
-            <implementation-class>com.tang.intellij.lua.psi.LuaFileManager</implementation-class>
-        </component>
-    </application-components>
-
-    <project-components>
-        <component>
-            <implementation-class>com.tang.intellij.lua.project.LuaSourceRootManager</implementation-class>
-        </component>
-    </project-components>
 
     <actions>
         <group id="LuaCallHierarchyPopupMenu">
