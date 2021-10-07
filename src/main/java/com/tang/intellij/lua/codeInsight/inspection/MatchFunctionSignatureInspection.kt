@@ -22,6 +22,7 @@ import com.intellij.openapi.observable.properties.GraphPropertyImpl.Companion.gr
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiErrorElement
 import com.intellij.ui.layout.panel
 import com.tang.intellij.lua.psi.*
 import com.tang.intellij.lua.search.SearchContext
@@ -100,7 +101,11 @@ class MatchFunctionSignatureInspection : StrictInspection() {
                         nArgs = i + 1
                         val typeInfo = concreteTypes.getOrNull(i)
                         if (typeInfo == null) {
-                            myHolder.registerProblem(call.lastChild.lastChild, "Missing argument: ${pi.name}: ${pi.ty}")
+                            val lastChild = call.lastChild.lastChild
+                            if (lastChild !is PsiErrorElement) {
+                                myHolder.registerProblem(lastChild, "Missing argument: ${pi.name}: ${pi.ty}")
+                            }
+
                             return@processArgs true
                         }
 
