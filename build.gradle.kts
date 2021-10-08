@@ -303,6 +303,7 @@ project(":") {
         }
 
         patchPluginXml {
+            dependsOn("installEmmyDebugger")
             sinceBuild.set(buildVersionData.sinceBuild)
             untilBuild.set(buildVersionData.untilBuild)
         }
