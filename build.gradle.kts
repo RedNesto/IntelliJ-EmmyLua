@@ -31,7 +31,7 @@ data class BuildData(
     val sinceBuild: String,
     val untilBuild: String,
     val archiveName: String = "IntelliJ-EmmyLua",
-    val jvmTarget: String = "1.8",
+    val jvmTarget: String = "11",
     val targetCompatibilityLevel: JavaVersion = JavaVersion.VERSION_11,
     val explicitJavaDependency: Boolean = true,
     val bunch: String = ideaSDKShortVersion,
@@ -42,22 +42,32 @@ data class BuildData(
 
 val buildDataList = listOf(
     BuildData(
+        ideaSDKShortVersion = "221",
+        ideaSDKVersion = "221.3427.89-EAP-SNAPSHOT",
+        sinceBuild = "221",
+        untilBuild = "221.*",
+        pluginVerifierIdeVersions = setOf("221.3427.89")
+    ),
+    BuildData(
         ideaSDKShortVersion = "213",
         ideaSDKVersion = "213.5744.223",
         sinceBuild = "212",
         untilBuild = "221.*",
+        jvmTarget = "1.8",
     ),
     BuildData(
         ideaSDKShortVersion = "211",
         ideaSDKVersion = "211.7142.45",
         sinceBuild = "211",
         untilBuild = "211.*",
+        jvmTarget = "1.8",
     ),
     BuildData(
         ideaSDKShortVersion = "203",
         ideaSDKVersion = "203.5981.155",
         sinceBuild = "203",
         untilBuild = "203.*",
+        jvmTarget = "1.8",
         pluginVerifierIdeVersions = setOf("203.8084.24")
     ),
     BuildData(

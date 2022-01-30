@@ -21,7 +21,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build and verify plugin
-      run: ./gradlew --no-daemon build runPluginVerifier -DIDEA_VER=212
+      run: ./gradlew --no-daemon build runPluginVerifier
     - name: Upload reports
       uses: actions/upload-artifact@v2
       with:
