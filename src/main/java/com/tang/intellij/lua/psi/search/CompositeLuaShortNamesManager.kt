@@ -25,7 +25,7 @@ import com.tang.intellij.lua.search.SearchContext
 import com.tang.intellij.lua.ty.ITyClass
 
 class CompositeLuaShortNamesManager : LuaShortNamesManager() {
-    private val list: Array<LuaShortNamesManager> = LuaShortNamesManager.EP_NAME.extensions
+    private val list: Array<LuaShortNamesManager> get() = LuaShortNamesManager.EP_NAME.extensions
 
     override fun findClass(name: String, context: SearchContext): LuaClass? {
         for (ep in list) {
