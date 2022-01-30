@@ -16,8 +16,8 @@
 
 package com.tang.intellij.lua.codeInsight.template.context
 
+import com.intellij.codeInsight.template.TemplateActionContext
 import com.intellij.codeInsight.template.TemplateContextType
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.tang.intellij.lua.psi.LuaIfStat
 
@@ -27,7 +27,7 @@ import com.tang.intellij.lua.psi.LuaIfStat
  */
 class LuaIfContextType : TemplateContextType("LUA_IF", "If statement", LuaCodeContextType::class.java) {
 
-    override fun isInContext(psiFile: PsiFile, i: Int): Boolean {
-        return PsiTreeUtil.findElementOfClassAtOffset(psiFile, i, LuaIfStat::class.java, false) != null
+    override fun isInContext(context: TemplateActionContext): Boolean {
+        return PsiTreeUtil.findElementOfClassAtOffset(context.file, context.startOffset, LuaIfStat::class.java, false) != null
     }
 }

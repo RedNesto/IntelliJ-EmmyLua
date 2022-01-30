@@ -40,12 +40,6 @@ class LuaLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
         return SmartIndentOptionsEditor()
     }
 
-    override fun getDefaultCommonSettings(): CommonCodeStyleSettings {
-        val commonSettings = CommonCodeStyleSettings(language)
-        commonSettings.initIndentOptions()
-        return commonSettings
-    }
-
     override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: LanguageCodeStyleSettingsProvider.SettingsType) {
         when (settingsType) {
             LanguageCodeStyleSettingsProvider.SettingsType.SPACING_SETTINGS -> {

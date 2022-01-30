@@ -108,7 +108,7 @@
         <!--editor handlers-->
         <enterHandlerDelegate implementation="com.tang.intellij.lua.editor.LuaEnterAfterUnmatchedBraceHandler" />
         <enterHandlerDelegate implementation="com.tang.intellij.lua.editor.LuaEnterInDocHandler"/>
-        <enterHandlerDelegate implementation="com.tang.intellij.lua.editor.LuaEnterBetweenBracesHandler"/>
+        <enterBetweenBracesDelegate language="Lua" implementationClass="com.tang.intellij.lua.editor.LuaEnterBetweenBracesHandler"/>
         <enterHandlerDelegate implementation="com.tang.intellij.lua.editor.LuaEnterBetweenRangeBlockHandler"/>
         <backspaceHandlerDelegate implementation="com.tang.intellij.lua.codeInsight.LuaBackspaceHandlerDelegate"/>
         <typedHandler implementation="com.tang.intellij.lua.editor.LuaTypedHandler"/>

@@ -16,7 +16,7 @@
 
 package com.tang.intellij.lua;
 
-import com.intellij.CommonBundle;
+import com.intellij.AbstractBundle;
 import com.intellij.reference.SoftReference;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -28,13 +28,13 @@ import java.util.ResourceBundle;
 
 public class LuaBundle {
     public static String message(@NotNull @PropertyKey(resourceBundle = BUNDLE) String key, @NotNull Object... params) {
-        return CommonBundle.message(getBundle(), key, params);
+        return AbstractBundle.message(getBundle(), key, params);
     }
 
     @Nullable
-    public static String messageOfNull(@NotNull @PropertyKey(resourceBundle = BUNDLE) String key,
+    public static String messageOrNull(@NotNull @PropertyKey(resourceBundle = BUNDLE) String key,
                                        @NotNull Object... params) {
-        return CommonBundle.messageOfNull(getBundle(), key, params);
+        return AbstractBundle.messageOrNull(getBundle(), key, params);
     }
 
     private static Reference<ResourceBundle> ourBundle;
