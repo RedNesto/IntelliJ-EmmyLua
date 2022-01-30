@@ -23,6 +23,7 @@ import com.tang.intellij.lua.comment.psi.api.LuaComment
 import com.tang.intellij.lua.ty.IFunSignature
 import com.tang.intellij.lua.ty.ITy
 import com.tang.intellij.lua.ty.ITyRenderer
+import java.util.*
 
 inline fun StringBuilder.wrap(prefix: String, postfix: String, crossinline body: () -> Unit) {
     this.append(prefix)
@@ -170,7 +171,7 @@ fun renderDefinition(sb: StringBuilder, block: () -> Unit) {
 }
 
 private fun renderTagList(sb: StringBuilder, name: String, comment: LuaComment) {
-    val tags = comment.findTags(name.toLowerCase())
+    val tags = comment.findTags(name.lowercase(Locale.getDefault()))
     renderTagList(sb, name, tags) { tagDef ->
         tagDef.commentString?.text?.let { sb.append(it) }
     }
