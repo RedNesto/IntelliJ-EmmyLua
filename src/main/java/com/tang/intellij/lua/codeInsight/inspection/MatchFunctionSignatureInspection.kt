@@ -23,7 +23,7 @@ import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiErrorElement
-import com.intellij.ui.layout.panel
+import com.intellij.ui.dsl.builder.panel
 import com.tang.intellij.lua.psi.*
 import com.tang.intellij.lua.search.SearchContext
 import com.tang.intellij.lua.ty.*
@@ -131,9 +131,9 @@ class MatchFunctionSignatureInspection : StrictInspection() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            row { checkBox("Ignore anonymous types", ignoreAnonymousTypesProperty) }
-            row { checkBox("Ignore unknown functions", ignoreUnknownFunctionsProperty) }
-            row { checkBox("Strict closure parameters count", strictParametersCountProperty) }
+            row { checkBox("Ignore anonymous types").graphProperty(ignoreAnonymousTypesProperty) }
+            row { checkBox("Ignore unknown functions").graphProperty(ignoreUnknownFunctionsProperty) }
+            row { checkBox("Strict closure parameters count").graphProperty(strictParametersCountProperty) }
         }
     }
 }

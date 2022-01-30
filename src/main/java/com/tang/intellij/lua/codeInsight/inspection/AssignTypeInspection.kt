@@ -21,7 +21,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.observable.properties.GraphPropertyImpl.Companion.graphProperty
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.ui.layout.panel
+import com.intellij.ui.dsl.builder.panel
 import com.tang.intellij.lua.psi.LuaAssignStat
 import com.tang.intellij.lua.psi.LuaIndexExpr
 import com.tang.intellij.lua.psi.LuaVisitor
@@ -92,7 +92,7 @@ class AssignTypeInspection : StrictInspection() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            row { checkBox("Ignore anonymous types", ignoreAnonymousTypesProperty) }
+            row { checkBox("Ignore anonymous types").graphProperty(ignoreAnonymousTypesProperty) }
         }
     }
 }
