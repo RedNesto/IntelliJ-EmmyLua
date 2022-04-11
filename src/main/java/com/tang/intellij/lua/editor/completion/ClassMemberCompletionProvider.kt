@@ -56,7 +56,7 @@ open class ClassMemberCompletionProvider : LuaCompletionProvider() {
             val isColon = indexExpr.colon != null
             val project = indexExpr.project
             val contextTy = LuaPsiTreeUtil.findContextClass(indexExpr)
-            val context = SearchContext.get(project)
+            val context = SearchContext.get(indexExpr)
             val prefixType = indexExpr.guessParentType(context)
             if (!Ty.isInvalid(prefixType)) {
                 complete(isColon, project, contextTy, prefixType, completionResultSet, completionResultSet.prefixMatcher, null)
@@ -138,7 +138,7 @@ open class ClassMemberCompletionProvider : LuaCompletionProvider() {
                             completionMode: MemberCompletionMode,
                             project: Project,
                             handlerProcessor: HandlerProcessor?) {
-        val type = member.guessType(SearchContext.get(project))
+        val type = member.guessType(SearchContext.get(member))
         val bold = thisType == callType
         val className = thisType.displayName
         if (type is ITyFunction) {
@@ -183,7 +183,7 @@ open class ClassMemberCompletionProvider : LuaCompletionProvider() {
                 val firstParam = it.getFirstParam(thisType, isColonStyle)
                 if (isColonStyle) {
                     if (firstParam == null) return@Processor true
-                    if (!callType.subTypeOf(firstParam.ty, SearchContext.get(classMember.project), true))
+                    if (!callType.subTypeOf(firstParam.ty, SearchContext.get(classMember), true))
                         return@Processor true
                 }
 

@@ -53,8 +53,7 @@ class LuaLineMarkerProvider : AbstractLineMarkerProvider() {
     private fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in LineMarkerInfo<*>>) {
         if (element is LuaClassMethodName) {
             val methodDef = PsiTreeUtil.getParentOfType(element, LuaClassMethod::class.java)!!
-            val project = methodDef.project
-            val context = SearchContext.get(project)
+            val context = SearchContext.get(methodDef)
             val type = methodDef.guessClassType(context)
 
             //OverridingMethod

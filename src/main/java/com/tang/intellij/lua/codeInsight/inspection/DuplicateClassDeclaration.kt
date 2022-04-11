@@ -40,7 +40,7 @@ class DuplicateClassDeclaration : LocalInspectionTool() {
                 val useScope = o.useScope as? GlobalSearchScope ?: return
                 val identifier = o.nameIdentifier
                 val project = o.project
-                val context = SearchContext.get(project)
+                val context = SearchContext.get(o)
                 context.withScope(useScope) {
                     LuaShortNamesManager
                             .getInstance(project)

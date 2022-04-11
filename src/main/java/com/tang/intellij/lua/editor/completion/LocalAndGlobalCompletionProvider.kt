@@ -49,7 +49,7 @@ class LocalAndGlobalCompletionProvider(private val mask: Int) : ClassMemberCompl
                 true
             })
         }
-        val ctx = SearchContext.get(psi.project)
+        val ctx = SearchContext.get(psi)
         when (psi) {
             is LuaFuncBodyOwner -> {
                 addTy(psi.guessType(ctx) as ITyFunction)

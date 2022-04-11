@@ -62,7 +62,7 @@ class LuaClassNameReference(element: LuaDocClassNameRef) : PsiReferenceBase<LuaD
                 return genericDef
         }
 
-        return LuaShortNamesManager.getInstance(myElement.project).findTypeDef(name, SearchContext.get(myElement.project))
+        return LuaShortNamesManager.getInstance(myElement.project).findTypeDef(name, SearchContext.get(myElement))
     }
 
     override fun getVariants(): Array<Any> = emptyArray()

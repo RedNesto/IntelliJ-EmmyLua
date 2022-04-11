@@ -64,11 +64,10 @@ class TableCompletionProvider : ClassMemberCompletionProvider() {
 
         val table = PsiTreeUtil.getParentOfType(completionParameters.position, LuaTableExpr::class.java)
         if (table != null) {
-            val project = table.project
             val prefixMatcher = completionResultSet.prefixMatcher
-            val ty = table.shouldBe(SearchContext.get(project))
+            val context = SearchContext.get(table)
+            val ty = table.shouldBe(context)
             ty.eachTopClass(Processor { luaType ->
-                val context = SearchContext.get(project)
                 luaType.lazyInit(context)
                 luaType.processMembers(context) { curType, member ->
                     member.name?.let {

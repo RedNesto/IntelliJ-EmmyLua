@@ -49,7 +49,7 @@ class LuaIndexReference internal constructor(element: LuaIndexExpr, private val 
     }
 
     override fun resolve(): PsiElement? {
-        return resolve(SearchContext.get(myElement.project))
+        return resolve(SearchContext.get(myElement))
     }
 
     override fun resolve(context: SearchContext): PsiElement? {

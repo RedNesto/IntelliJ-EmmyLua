@@ -74,7 +74,7 @@ class LuaNameSuggestionProvider : NameSuggestionProvider {
                     val paramIndex = p1.getIndexFor(ele)
                     val p2 = p1.parent as? LuaCallExpr
                     if (p2 != null) {
-                        val ty = p2.guessParentType(SearchContext.get(ele.project))
+                        val ty = p2.guessParentType(SearchContext.get(ele))
                         TyUnion.each(ty) { iTy ->
                             if (iTy is ITyFunction) {
                                 iTy.process(Processor { sig ->
@@ -106,7 +106,7 @@ class LuaNameSuggestionProvider : NameSuggestionProvider {
         search.forEach { getNames(it, set) }
 
         if (psi is LuaTypeGuessable) {
-            val context = SearchContext.get(psi.getProject())
+            val context = SearchContext.get(psi)
             val type = psi.guessType(context)
             if (!Ty.isInvalid(type)) {
                 val names = HashSet<String>()

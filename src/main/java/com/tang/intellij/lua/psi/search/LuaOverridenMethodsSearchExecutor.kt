@@ -28,8 +28,7 @@ import com.tang.intellij.lua.ty.TyClass
 class LuaOverridenMethodsSearchExecutor : QueryExecutor<LuaClassMethod, LuaOverridenMethodsSearch.SearchParameters> {
     override fun execute(searchParameters: LuaOverridenMethodsSearch.SearchParameters, processor: Processor<in LuaClassMethod>): Boolean {
         val method = searchParameters.method
-        val project = method.project
-        val context = SearchContext.get(project)
+        val context = SearchContext.get(method)
         val type = method.guessClassType(context)
         val methodName = method.name
         if (type != null && methodName != null) {

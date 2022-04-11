@@ -16,6 +16,7 @@
 
 package com.tang.intellij.lua.ty
 
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.tang.intellij.lua.Constants
 import com.tang.intellij.lua.psi.LuaCallExpr
@@ -114,12 +115,12 @@ open class TySubstitutor : ITySubstitutor {
     }
 }
 
-class TyAliasSubstitutor private constructor(val project: Project) : ITySubstitutor {
+class TyAliasSubstitutor private constructor(val project: Project, val module: Module?) : ITySubstitutor {
     companion object {
         fun substitute(ty: ITy, context: SearchContext): ITy {
             /*if (context.forStub)
                 return ty*/
-            return ty.substitute(TyAliasSubstitutor(context.project))
+            return ty.substitute(TyAliasSubstitutor(context.project, context.module))
         }
     }
 
@@ -130,7 +131,8 @@ class TyAliasSubstitutor private constructor(val project: Project) : ITySubstitu
     }
 
     override fun substitute(clazz: ITyClass): ITy {
-        return clazz.recoverAlias(SearchContext.get(project), this)
+        val ctx = module?.let(SearchContext::get) ?: SearchContext.get(project)
+        return clazz.recoverAlias(ctx, this)
     }
 
     override fun substitute(generic: ITyGeneric): ITy {

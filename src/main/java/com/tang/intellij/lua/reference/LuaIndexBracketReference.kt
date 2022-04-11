@@ -52,7 +52,7 @@ class LuaIndexBracketReference internal constructor(element: LuaIndexExpr, priva
     }
 
     override fun resolve(): PsiElement? {
-        return resolve(SearchContext.get(myElement.project))
+        return resolve(SearchContext.get(myElement))
     }
 
     override fun resolve(context: SearchContext): PsiElement? {

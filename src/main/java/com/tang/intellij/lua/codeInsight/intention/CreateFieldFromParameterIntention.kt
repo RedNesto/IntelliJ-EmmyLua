@@ -79,7 +79,7 @@ class CreateFieldFromParameterIntention : BaseIntentionAction() {
                     val fieldName = dialog.fieldName
                     val createDoc = dialog.isCreateDoc
                     if (createDoc) {
-                        val context = SearchContext.get(project)
+                        val context = SearchContext.get(psiFile)
                         val classType = methodDef.guessClassType(context)
                         if (classType != null) {
                             val def = LuaShortNamesManager.getInstance(project).findClass(classType.className, context)

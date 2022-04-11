@@ -114,7 +114,7 @@ class LuaDocCompletionContributor : CompletionContributor() {
                 val classDef = PsiTreeUtil.findChildOfType(comment, LuaDocTagClass::class.java)
                 if (classDef != null) {
                     val classType = classDef.type
-                    val ctx = SearchContext.get(classDef.project)
+                    val ctx = SearchContext.get(classDef)
                     classType.processMembers(ctx) { _, member ->
                         if (member is LuaClassField)
                             completionResultSet.addElement(LookupElementBuilder.create(member.name!!).withIcon(LuaIcons.CLASS_FIELD))
@@ -131,7 +131,7 @@ class LuaDocCompletionContributor : CompletionContributor() {
                 val seeRefTag = PsiTreeUtil.getParentOfType(position, LuaDocTagSee::class.java)
                 if (seeRefTag != null) {
                     val classType = seeRefTag.classNameRef?.resolveType() as? ITyClass
-                    val ctx = SearchContext.get(seeRefTag.project)
+                    val ctx = SearchContext.get(seeRefTag)
                     classType?.processMembers(ctx) { _, member ->
                         completionResultSet.addElement(LookupElementBuilder.create(member.name!!).withIcon(LuaIcons.CLASS_FIELD))
                         Unit

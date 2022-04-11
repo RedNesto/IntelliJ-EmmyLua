@@ -32,7 +32,7 @@ class LuaTypeProvider : ExpressionTypeProvider<LuaPsiElement>() {
 
     override fun getInformationHint(element: LuaPsiElement): String = when (element) {
         is LuaTypeGuessable -> {
-            val searchContext = SearchContext.get(element.project)
+            val searchContext = SearchContext.get(element)
             val guessedType = SlowOperations.allowSlowOperations(ThrowableComputable { element.guessType(searchContext) })
             StringUtil.escapeXmlEntities(guessedType.displayName)
         }
