@@ -16,6 +16,8 @@
 
 package com.tang.intellij.lua.psi;
 
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -119,6 +121,10 @@ public class LuaPsiTreeUtil {
                 break;
             if (current instanceof LuaClassMethod) {
                 LuaClassMethod method = (LuaClassMethod) current;
+                Module module = ModuleUtil.findModuleForPsiElement(current);
+                if (module != null) {
+                    return method.guessParentType(SearchContext.Companion.get(module));
+                }
                 return method.guessParentType(SearchContext.Companion.get(current.getProject()));
             }
             current = current.getParent();

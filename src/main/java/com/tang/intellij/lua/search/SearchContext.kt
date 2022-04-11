@@ -16,12 +16,15 @@
 
 package com.tang.intellij.lua.search
 
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.ProjectAndLibrariesScope
+import com.intellij.psi.search.ProjectScope
 import com.tang.intellij.lua.ext.ILuaTypeInfer
 import com.tang.intellij.lua.psi.LuaTypeGuessable
 import com.tang.intellij.lua.ty.ITy
@@ -32,7 +35,7 @@ import java.util.*
 
  * Created by tangzx on 2017/1/14.
  */
-class SearchContext private constructor(val project: Project) {
+class SearchContext private constructor(val project: Project, val module: Module? = null) {
 
     companion object {
         private val threadLocal = object : ThreadLocal<Stack<SearchContext>>() {
@@ -48,6 +51,29 @@ class SearchContext private constructor(val project: Project) {
             } else {
                 stack.peek()
             }
+        }
+
+        fun get(module: Module): SearchContext {
+            val stack = threadLocal.get()
+            return if (stack.isEmpty()) {
+                SearchContext(module.project, module)
+            } else {
+                stack.peek()
+            }
+        }
+
+        fun get(element: PsiElement): SearchContext {
+            val module = if (element is PsiFile) {
+                ModuleUtil.findModuleForFile(element)
+            } else {
+                ModuleUtil.findModuleForPsiElement(element)
+            }
+
+            if (module != null) {
+                return get(module)
+            }
+
+            return get(element.project)
         }
 
         fun infer(psi: LuaTypeGuessable): ITy {
@@ -84,7 +110,7 @@ class SearchContext private constructor(val project: Project) {
         }
 
         fun <T> withStub(project: Project, file: PsiFile, defaultValue: T, action: (ctx: SearchContext) -> T): T {
-            val context = SearchContext(project)
+            val context = SearchContext(project, ModuleUtil.findModuleForFile(file))
             return withStub(context, defaultValue, action)
         }
 
@@ -134,7 +160,9 @@ class SearchContext private constructor(val project: Project) {
         if (isDumb)
             return GlobalSearchScope.EMPTY_SCOPE
         if (myScope == null) {
-            myScope = ProjectAndLibrariesScope(project)
+            myScope = module?.getModuleWithDependenciesAndLibrariesScope(false)
+                ?.uniteWith(ProjectScope.getLibrariesScope(project))
+                ?: ProjectAndLibrariesScope(project)
         }
         return myScope!!
     }

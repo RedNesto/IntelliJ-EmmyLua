@@ -16,6 +16,7 @@
 
 package com.tang.intellij.lua.reference
 
+import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
@@ -45,7 +46,9 @@ class LuaNameReference internal constructor(element: LuaNameExpr) : PsiReference
     }
 
     override fun resolve(): PsiElement? {
-        return resolve(SearchContext.get(myElement.project))
+        val context = ModuleUtil.findModuleForPsiElement(myElement)?.let(SearchContext::get)
+            ?: SearchContext.get(myElement.project)
+        return resolve(context)
     }
 
     override fun resolve(context: SearchContext): PsiElement? {
