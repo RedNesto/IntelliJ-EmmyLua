@@ -87,7 +87,7 @@ class LocalAndGlobalCompletionProvider(private val mask: Int) : ClassMemberCompl
             if (moduleName != null) {
                 val ty = TyLazyClass(moduleName)
                 val contextTy = LuaPsiTreeUtil.findContextClass(nameExpr)
-                addClass(contextTy, ty, cur.project, MemberCompletionMode.Dot, completionResultSet, completionResultSet.prefixMatcher, null)
+                addClass(contextTy, ty, cur, MemberCompletionMode.Dot, completionResultSet, completionResultSet.prefixMatcher, null)
             }
         }
 
@@ -110,9 +110,8 @@ class LocalAndGlobalCompletionProvider(private val mask: Int) : ClassMemberCompl
         }
 
         //global
-        val project = cur.project
         if (has(GLOBAL_FUN) || has(GLOBAL_VAR)) {
-            addClass(TyClass.G, TyClass.G, project, MemberCompletionMode.Dot, completionResultSet, completionResultSet.prefixMatcher, null)
+            addClass(TyClass.G, TyClass.G, cur, MemberCompletionMode.Dot, completionResultSet, completionResultSet.prefixMatcher, null)
         }
         //key words
         if (has(KEY_WORDS)) {

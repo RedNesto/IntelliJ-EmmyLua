@@ -23,6 +23,7 @@ import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.util.Processor
 import com.tang.intellij.lua.lang.LuaIcons
 import com.tang.intellij.lua.psi.*
@@ -54,12 +55,11 @@ open class ClassMemberCompletionProvider : LuaCompletionProvider() {
 
         if (indexExpr is LuaIndexExpr) {
             val isColon = indexExpr.colon != null
-            val project = indexExpr.project
             val contextTy = LuaPsiTreeUtil.findContextClass(indexExpr)
             val context = SearchContext.get(indexExpr)
             val prefixType = indexExpr.guessParentType(context)
             if (!Ty.isInvalid(prefixType)) {
-                complete(isColon, project, contextTy, prefixType, completionResultSet, completionResultSet.prefixMatcher, null)
+                complete(isColon, indexExpr, contextTy, prefixType, completionResultSet, completionResultSet.prefixMatcher, null)
             }
             //smart
             val nameExpr = indexExpr.prefixExpr
@@ -77,7 +77,7 @@ open class ClassMemberCompletionProvider : LuaCompletionProvider() {
                         if (!Ty.isInvalid(prefixType)) {
                             val prefixMatcher = completionResultSet.prefixMatcher
                             val resultSet = completionResultSet.withPrefixMatcher("$prefixName*$postfixName")
-                            complete(isColon, project, contextTy, type, resultSet, prefixMatcher, object : HandlerProcessor() {
+                            complete(isColon, indexExpr, contextTy, type, resultSet, prefixMatcher, object : HandlerProcessor() {
                                 override fun process(element: LuaLookupElement, member: LuaClassMember, memberTy: ITy?): LookupElement {
                                     element.itemText = txt + colon + element.itemText
                                     element.lookupString = txt + colon + element.lookupString
@@ -93,7 +93,7 @@ open class ClassMemberCompletionProvider : LuaCompletionProvider() {
     }
 
     private fun complete(isColon: Boolean,
-                         project: Project,
+                         element: PsiElement,
                          contextTy: ITy,
                          prefixType: ITy,
                          completionResultSet: CompletionResultSet,
@@ -101,30 +101,30 @@ open class ClassMemberCompletionProvider : LuaCompletionProvider() {
                          handlerProcessor: HandlerProcessor?) {
         val mode = if (isColon) MemberCompletionMode.Colon else MemberCompletionMode.Dot
         prefixType.eachTopClass(Processor { luaType ->
-            addClass(contextTy, luaType, project, mode, completionResultSet, prefixMatcher, handlerProcessor)
+            addClass(contextTy, luaType, element, mode, completionResultSet, prefixMatcher, handlerProcessor)
             true
         })
     }
 
     protected fun addClass(contextTy: ITy,
                            luaType:ITyClass,
-                           project: Project,
+                           element: PsiElement,
                            completionMode:MemberCompletionMode,
                            completionResultSet: CompletionResultSet,
                            prefixMatcher: PrefixMatcher,
                            handlerProcessor: HandlerProcessor?) {
-        val context = SearchContext.get(project)
+        val context = SearchContext.get(element)
         luaType.lazyInit(context)
         luaType.processMembers(context) { curType, member ->
             ProgressManager.checkCanceled()
             member.name?.let {
-                if (prefixMatcher.prefixMatches(it) && curType.isVisibleInScope(project, contextTy, member.visibility)) {
+                if (prefixMatcher.prefixMatches(it) && curType.isVisibleInScope(element.project, contextTy, member.visibility)) {
                     addMember(completionResultSet,
                             member,
                             curType,
                             luaType,
                             completionMode,
-                            project,
+                            element.project,
                             handlerProcessor)
                 }
             }

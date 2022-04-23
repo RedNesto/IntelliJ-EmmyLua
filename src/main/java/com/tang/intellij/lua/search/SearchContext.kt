@@ -20,6 +20,7 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.impl.LibraryScopeCache
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
@@ -161,7 +162,7 @@ class SearchContext private constructor(val project: Project, val module: Module
             return GlobalSearchScope.EMPTY_SCOPE
         if (myScope == null) {
             myScope = module?.getModuleWithDependenciesAndLibrariesScope(false)
-                ?.uniteWith(ProjectScope.getLibrariesScope(project))
+                //?.uniteWith(ProjectScope.getLibrariesScope(project))
                 ?: ProjectAndLibrariesScope(project)
         }
         return myScope!!
