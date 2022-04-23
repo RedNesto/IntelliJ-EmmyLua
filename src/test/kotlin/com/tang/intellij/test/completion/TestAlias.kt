@@ -16,7 +16,11 @@
 
 package com.tang.intellij.test.completion
 
+import org.junit.Test
+
 class TestAlias : TestCompletionBase() {
+
+    @Test
     fun `test alias 1`() {
         myFixture.configureByFile("class.lua")
         doTest("""

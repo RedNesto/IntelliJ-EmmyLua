@@ -17,8 +17,11 @@
 package com.tang.intellij.test.vararg
 
 import com.tang.intellij.test.completion.TestCompletionBase
+import org.junit.Test
 
 class VarargTest : TestCompletionBase() {
+
+    @Test
     fun `test vararg 1`() {
         myFixture.configureByFile("class.lua")
         doTest("""
@@ -41,6 +44,7 @@ class VarargTest : TestCompletionBase() {
         }
     }
 
+    @Test
     fun `test vararg 2`() {
         myFixture.configureByFile("class.lua")
         doTest("""

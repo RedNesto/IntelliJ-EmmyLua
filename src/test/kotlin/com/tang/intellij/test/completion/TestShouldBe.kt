@@ -16,8 +16,11 @@
 
 package com.tang.intellij.test.completion
 
+import org.junit.Test
+
 class TestShouldBe : TestCompletionBase() {
 
+    @Test
     fun `test issue #298`() {
         doTest("""
             --- test_issue_298.lua

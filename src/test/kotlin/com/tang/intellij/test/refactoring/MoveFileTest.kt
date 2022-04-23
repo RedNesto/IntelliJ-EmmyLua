@@ -20,12 +20,14 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.refactoring.MultiFileTestCase
 import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFilesOrDirectoriesProcessor
+import org.junit.Test
 
 class MoveFileTest : MultiFileTestCase() {
     override fun getTestRoot() = "/refactoring/"
 
     override fun getTestDataPath() = "src/test/resources/"
 
+    @Test
     fun testMoveFile() {
         val fileToMove = "A.lua"
         val targetDirName = "to"

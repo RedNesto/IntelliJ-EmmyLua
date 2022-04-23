@@ -20,9 +20,11 @@ import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.util.ui.tree.TreeUtil
 import com.tang.intellij.test.LuaTestBase
 import org.intellij.lang.annotations.Language
+import org.junit.Test
 
 class StructureViewTest : LuaTestBase() {
 
+    @Test
     fun testStructureViewBase() {
         doTest("""
              ---@class A

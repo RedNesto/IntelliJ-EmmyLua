@@ -16,8 +16,11 @@
 
 package com.tang.intellij.test.completion
 
+import org.junit.Test
+
 class TestTuple : TestCompletionBase() {
 
+    @Test
     fun `test tuple 1`() {
         doTest("""
             --- test_tuple_1.lua

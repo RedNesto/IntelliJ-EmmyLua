@@ -16,8 +16,11 @@
 
 package com.tang.intellij.test.completion
 
+import org.junit.Test
+
 class TestArgHistory : TestCompletionBase() {
 
+    @Test
     fun `test arg history 1`() {
         doTest("""
             --- test_arg_history_1.lua

@@ -18,9 +18,11 @@ package com.tang.intellij.test.completion
 
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.tang.intellij.test.fileTreeFromText
+import org.junit.Test
 
 class TestModule : TestCompletionBase() {
 
+    @Test
     fun `test module type`() {
         fileTreeFromText("""
              --- moduleA.lua
@@ -40,6 +42,7 @@ class TestModule : TestCompletionBase() {
         assertTrue(elementStrings!!.contains("name"))
     }
 
+    @Test
     fun `test module field completion`() {
         fileTreeFromText("""
              --- moduleA.lua
@@ -57,6 +60,7 @@ class TestModule : TestCompletionBase() {
         assertTrue(elementStrings!!.contains("name"))
     }
 
+    @Test
     fun `test module members visibility`() {
         fileTreeFromText("""
              --- moduleA.lua

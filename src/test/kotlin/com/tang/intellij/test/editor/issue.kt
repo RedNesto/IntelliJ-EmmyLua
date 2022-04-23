@@ -18,9 +18,11 @@ package com.tang.intellij.test.editor
 
 import com.tang.intellij.test.LuaTestBase
 import com.tang.intellij.test.fileTreeFromText
+import org.junit.Test
 
 class IssueTest : LuaTestBase() {
 
+    @Test
     fun `test issue #359` () {
         fileTreeFromText("""
             --- test_issue_359.lua
@@ -46,6 +48,7 @@ class IssueTest : LuaTestBase() {
         """.trimIndent())
     }
 
+    @Test
     fun `test issue #337@1`() {
         fileTreeFromText("""
             --- test_issue_337@1.lua
@@ -57,6 +60,7 @@ class IssueTest : LuaTestBase() {
         """.trimIndent())
     }
 
+    @Test
     fun `test issue #337@2`() {
         fileTreeFromText("""
             --- test_issue_337@2.lua

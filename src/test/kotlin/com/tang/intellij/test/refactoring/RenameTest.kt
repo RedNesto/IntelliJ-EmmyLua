@@ -17,8 +17,11 @@
 package com.tang.intellij.test.refactoring
 
 import com.tang.intellij.test.LuaTestBase
+import org.junit.Test
 
 class RenameTest : LuaTestBase() {
+
+    @Test
     fun `test rename file`() = checkByDirectory("""
          --- A.lua
          print("a")

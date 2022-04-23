@@ -17,9 +17,11 @@
 package com.tang.intellij.test.generic
 
 import com.tang.intellij.test.completion.TestCompletionBase
+import org.junit.Test
 
 class GenericTest : TestCompletionBase() {
 
+    @Test
     fun `test generic 1`() {
         myFixture.configureByFile("class.lua")
         doTest("""
@@ -39,6 +41,7 @@ class GenericTest : TestCompletionBase() {
         }
     }
 
+    @Test
     fun `test generic 2`() {
         myFixture.configureByFile("class.lua")
         doTest("""
@@ -58,6 +61,7 @@ class GenericTest : TestCompletionBase() {
         }
     }
 
+    @Test
     fun `test generic 3`() {
         myFixture.configureByFile("class.lua")
         doTest("""
@@ -82,6 +86,7 @@ class GenericTest : TestCompletionBase() {
         }
     }
 
+    @Test
     fun `test custom iterator`() {
         myFixture.configureByFile("class.lua")
         doTest("""

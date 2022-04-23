@@ -16,7 +16,11 @@
 
 package com.tang.intellij.test.completion
 
+import org.junit.Test
+
 class TestStringLiteralType : TestCompletionBase() {
+
+    @Test
     fun `test literal type 1`() {
         doTest("""
             --- test_tuple_1.lua
@@ -31,6 +35,7 @@ class TestStringLiteralType : TestCompletionBase() {
         }
     }
 
+    @Test
     fun `test issue #338`() {
         doTest("""
             --- test_issue_338.lua

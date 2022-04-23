@@ -17,9 +17,11 @@
 package com.tang.intellij.test.inspections
 
 import com.tang.intellij.lua.codeInsight.inspection.ReturnTypeInspection
+import org.junit.Test
 
 class ReturnTypeInspectionTest : LuaInspectionsTestBase(ReturnTypeInspection()) {
 
+    @Test
     fun `test return 1`() = checkByText("""
         ---@return string
         local function test()
@@ -27,6 +29,7 @@ class ReturnTypeInspectionTest : LuaInspectionsTestBase(ReturnTypeInspection()) 
         end
     """)
 
+    @Test
     fun `test return 2`() = checkByText("""
         ---@return string
         local function test()
@@ -34,6 +37,7 @@ class ReturnTypeInspectionTest : LuaInspectionsTestBase(ReturnTypeInspection()) 
         end
     """)
 
+    @Test
     fun `test non return`() = checkByText("""
         ---@return string
         local function test<warning>()

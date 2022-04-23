@@ -16,17 +16,21 @@
 
 package com.tang.intellij.test.completion
 
+import org.junit.Test
+
 /**
  *
  * Created by tangzx on 2017/4/23.
  */
 class TestCompletion : TestCompletionBase() {
 
+    @Test
     fun testLocalCompletion() {
         myFixture.configureByFiles("testCompletion.lua")
         doTestWithResult(listOf("a", "b", "func1"))
     }
 
+    @Test
     fun testGlobalCompletion() {
         //test 1
         myFixture.configureByFiles("globals.lua")
@@ -41,18 +45,21 @@ class TestCompletion : TestCompletionBase() {
         doTestWithResult(listOf("aaa", "bbb", "ccc"))
     }
 
+    @Test
     fun testSelfCompletion() {
         myFixture.configureByFiles("testSelf.lua")
 
         doTestWithResult(listOf("self:aaa", "self:abb"))
     }
 
+    @Test
     fun testParamCompletion() {
         myFixture.configureByFiles("testParam.lua")
 
         doTestWithResult(listOf("param1", "param2"))
     }
 
+    @Test
     fun testAnnotation() {
         val code = "---@class MyClass\n" +
                 "---@field public name string\n" +
@@ -72,24 +79,28 @@ class TestCompletion : TestCompletionBase() {
         doTestWithResult("method")
     }
 
+    @Test
     fun testAnnotationArray() {
         myFixture.configureByFiles("testAnnotationArray.lua", "class.lua")
 
         doTestWithResult(listOf("name", "age", "sayHello"))
     }
 
+    @Test
     fun testAnnotationFun() {
         myFixture.configureByFiles("testAnnotationFun.lua", "class.lua")
 
         doTestWithResult(listOf("name", "age", "sayHello"))
     }
 
+    @Test
     fun testAnnotationDict() {
         myFixture.configureByFiles("testAnnotationDict.lua", "class.lua")
 
         doTestWithResult(listOf("name", "age", "sayHello"))
     }
 
+    @Test
     fun testAnonymous() {
         doTest("""
             --- testAnonymous.lua
@@ -106,6 +117,7 @@ class TestCompletion : TestCompletionBase() {
         }
     }
 
+    @Test
     fun `test doc table 1`() {
         doTest("""
              --- doc_table_test_A.lua

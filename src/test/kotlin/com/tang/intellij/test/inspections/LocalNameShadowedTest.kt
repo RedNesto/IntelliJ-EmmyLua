@@ -17,9 +17,11 @@
 package com.tang.intellij.test.inspections
 
 import com.tang.intellij.lua.codeInsight.inspection.LocalNameShadowed
+import org.junit.Test
 
 class LocalNameShadowedTest : LuaInspectionsTestBase(LocalNameShadowed()) {
 
+    @Test
     fun testLocalNameHidesPrevious() = checkByText("""
         local var1 = 1
         print(var1)

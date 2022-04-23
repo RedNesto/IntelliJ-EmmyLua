@@ -16,8 +16,11 @@
 
 package com.tang.intellij.test.completion
 
+import org.junit.Test
+
 class ParsingTest : TestCompletionBase() {
 
+    @Test
     fun `test parse chinese non-java characters`() {
         doTest("""
             --- test_parse_chinese_characters.lua
