@@ -95,6 +95,7 @@
         ID="regexp:[A-Za-z_][A-Za-z0-9_]*"
         NUMBER="NUMBER"
         STRING = "STRING"
+        HASH = "HASH"
 
         //lua 5.3
         DOUBLE_COLON = "::"
@@ -149,7 +150,7 @@ private stat_impl ::=
 private stat_recover ::= !(ID
     | ',' | ';'
     | 'local' | 'do' | 'while' | 'repeat' | 'function' | 'if' | 'for' | 'return' | break
-    | nil | true | false | STRING | NUMBER | '::' | 'goto'
+    | nil | true | false | STRING | HASH | NUMBER | '::' | 'goto'
     | unaryOp)
 
 emptyStat ::= ';'
@@ -359,7 +360,7 @@ exprList ::= expr (',' expr)* {
     stubClass = "com.tang.intellij.lua.stubs.LuaPlaceholderStub"
 }
 
-literalExpr ::= nil | false | true | NUMBER | STRING | "..." {
+literalExpr ::= nil | false | true | NUMBER | STRING | HASH | "..." {
     mixin = 'com.tang.intellij.lua.psi.impl.LuaLiteralExprMixin'
     implements = [
         "com.tang.intellij.lua.stubs.LuaExprStubElement<com.tang.intellij.lua.stubs.LuaLiteralExprStub>"
@@ -367,6 +368,10 @@ literalExpr ::= nil | false | true | NUMBER | STRING | "..." {
     //stubClass = 'com.tang.intellij.lua.stubs.LuaExprStub'
 }
 stringExpr ::= STRING {
+    extends = literalExpr
+    elementType = literalExpr
+}
+hashExpr ::= HASH {
     extends = literalExpr
     elementType = literalExpr
 }
@@ -431,7 +436,7 @@ left indexExpr ::= '[' expr ']' | '.' ID | ':' ID {
 args ::= listArgs | singleArg {
     stubClass = 'com.tang.intellij.lua.stubs.LuaPlaceholderStub'
 }
-singleArg ::= tableExpr | stringExpr { extends = args }
+singleArg ::= tableExpr | stringExpr | hashExpr { extends = args }
 private arg_expr_list ::= (expr ',')* (expr |& ')') { pin = 1 }
 listArgs ::= '(' (arg_expr_list)? ')' { extends = args pin = 1 }
 

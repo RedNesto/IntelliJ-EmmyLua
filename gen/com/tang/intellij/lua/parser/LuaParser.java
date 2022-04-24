@@ -659,6 +659,18 @@ public class LuaParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // HASH
+  public static boolean hashExpr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "hashExpr")) return false;
+    if (!nextTokenIs(b, HASH)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, HASH);
+    exit_section_(b, m, LITERAL_EXPR, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // 'if' expr 'then' <<lazyBlock>> ('elseif' expr 'then' <<lazyBlock>>)* ('else' <<lazyBlock>>)? 'end'
   public static boolean ifStat(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ifStat")) return false;
@@ -807,7 +819,7 @@ public class LuaParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // nil | false | true | NUMBER | STRING | "..."
+  // nil | false | true | NUMBER | STRING | HASH | "..."
   public static boolean literalExpr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "literalExpr")) return false;
     boolean r;
@@ -817,6 +829,7 @@ public class LuaParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, TRUE);
     if (!r) r = consumeToken(b, NUMBER);
     if (!r) r = consumeToken(b, STRING);
+    if (!r) r = consumeToken(b, HASH);
     if (!r) r = consumeToken(b, ELLIPSIS);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -1173,14 +1186,14 @@ public class LuaParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // tableExpr | stringExpr
+  // tableExpr | stringExpr | hashExpr
   public static boolean singleArg(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "singleArg")) return false;
-    if (!nextTokenIs(b, "<single arg>", LCURLY, STRING)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, SINGLE_ARG, "<single arg>");
     r = tableExpr(b, l + 1);
     if (!r) r = stringExpr(b, l + 1);
+    if (!r) r = hashExpr(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -1224,7 +1237,7 @@ public class LuaParser implements PsiParser, LightPsiParser {
   // !(ID
   //     | ',' | ';'
   //     | 'local' | 'do' | 'while' | 'repeat' | 'function' | 'if' | 'for' | 'return' | break
-  //     | nil | true | false | STRING | NUMBER | '::' | 'goto'
+  //     | nil | true | false | STRING | HASH | NUMBER | '::' | 'goto'
   //     | unaryOp)
   static boolean stat_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stat_recover")) return false;
@@ -1238,7 +1251,7 @@ public class LuaParser implements PsiParser, LightPsiParser {
   // ID
   //     | ',' | ';'
   //     | 'local' | 'do' | 'while' | 'repeat' | 'function' | 'if' | 'for' | 'return' | break
-  //     | nil | true | false | STRING | NUMBER | '::' | 'goto'
+  //     | nil | true | false | STRING | HASH | NUMBER | '::' | 'goto'
   //     | unaryOp
   private static boolean stat_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stat_recover_0")) return false;
@@ -1259,6 +1272,7 @@ public class LuaParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, TRUE);
     if (!r) r = consumeToken(b, FALSE);
     if (!r) r = consumeToken(b, STRING);
+    if (!r) r = consumeToken(b, HASH);
     if (!r) r = consumeToken(b, NUMBER);
     if (!r) r = consumeToken(b, DOUBLE_COLON);
     if (!r) r = consumeToken(b, GOTO);

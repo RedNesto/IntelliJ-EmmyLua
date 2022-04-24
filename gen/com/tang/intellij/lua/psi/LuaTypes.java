@@ -86,6 +86,7 @@ public interface LuaTypes {
   IElementType GETN = LuaParserDefinitionKt.createToken("#");
   IElementType GOTO = LuaParserDefinitionKt.createToken("goto");
   IElementType GT = LuaParserDefinitionKt.createToken(">");
+  IElementType HASH = LuaParserDefinitionKt.createToken("HASH");
   IElementType ID = LuaParserDefinitionKt.createToken("ID");
   IElementType IF = LuaParserDefinitionKt.createToken("if");
   IElementType IN = LuaParserDefinitionKt.createToken("in");
