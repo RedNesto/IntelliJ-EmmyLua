@@ -5,9 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface LuaDocTagDeprecated extends LuaDocPsiElement {
-
-  @Nullable
-  LuaDocCommentString getCommentString();
+public interface LuaDocTagDeprecated extends LuaDocTag {
 
 }

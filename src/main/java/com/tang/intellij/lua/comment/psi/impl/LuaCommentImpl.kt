@@ -73,7 +73,7 @@ class LuaCommentImpl(node: ASTNode) : ASTWrapperPsiElement(node), LuaComment {
         }
 
     override val isDeprecated: Boolean
-        get() = findTags("deprecated").isNotEmpty()
+        get() = findTags(LuaDocTagDeprecated::class.java).isNotEmpty()
 
     override fun getParamDef(name: String): LuaDocTagParam? {
         var element: PsiElement? = firstChild
