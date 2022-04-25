@@ -34,7 +34,7 @@ import javax.swing.JComponent
 class AssignTypeInspection : StrictInspection() {
 
     private val graph = PropertyGraph()
-    private var ignoreAnonymousTypesProperty = graph.graphProperty { false }
+    private var ignoreAnonymousTypesProperty = graph.lazyProperty { false }
     var ignoreAnonymousTypes by ignoreAnonymousTypesProperty // Public for built-in options serialization
 
     override fun buildVisitor(myHolder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor =
@@ -92,7 +92,7 @@ class AssignTypeInspection : StrictInspection() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            row { checkBox("Ignore anonymous types").graphProperty(ignoreAnonymousTypesProperty) }
+            row { checkBox("Ignore anonymous types").validationRequestor(ignoreAnonymousTypesProperty::afterPropagation) }
         }
     }
 }

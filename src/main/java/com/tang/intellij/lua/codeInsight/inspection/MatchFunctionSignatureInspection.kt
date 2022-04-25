@@ -32,11 +32,11 @@ import javax.swing.JComponent
 class MatchFunctionSignatureInspection : StrictInspection() {
 
     private val graph = PropertyGraph()
-    private var ignoreAnonymousTypesProperty = graph.graphProperty { false }
+    private var ignoreAnonymousTypesProperty = graph.lazyProperty { false }
     var ignoreAnonymousTypes by ignoreAnonymousTypesProperty // Public for built-in options serialization
-    private var ignoreUnknownFunctionsProperty = graph.graphProperty { false }
+    private var ignoreUnknownFunctionsProperty = graph.lazyProperty { false }
     var ignoreUnknownFunctions by ignoreUnknownFunctionsProperty
-    private var strictParametersCountProperty = graph.graphProperty { true }
+    private var strictParametersCountProperty = graph.lazyProperty { true }
     var strictParametersCount by strictParametersCountProperty // Public for built-in options serialization
 
     data class ConcreteTypeInfo(val param: LuaExpr, val ty: ITy)
@@ -131,9 +131,9 @@ class MatchFunctionSignatureInspection : StrictInspection() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            row { checkBox("Ignore anonymous types").graphProperty(ignoreAnonymousTypesProperty) }
-            row { checkBox("Ignore unknown functions").graphProperty(ignoreUnknownFunctionsProperty) }
-            row { checkBox("Strict closure parameters count").graphProperty(strictParametersCountProperty) }
+            row { checkBox("Ignore anonymous types").validationRequestor(ignoreAnonymousTypesProperty::afterPropagation) }
+            row { checkBox("Ignore unknown functions").validationRequestor(ignoreUnknownFunctionsProperty::afterPropagation) }
+            row { checkBox("Strict closure parameters count").validationRequestor(strictParametersCountProperty::afterPropagation) }
         }
     }
 }

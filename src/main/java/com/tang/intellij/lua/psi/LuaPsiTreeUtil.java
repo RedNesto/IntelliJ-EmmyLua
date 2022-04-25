@@ -92,8 +92,10 @@ public class LuaPsiTreeUtil {
     }
 
 
-    private static final Class[] WS = {PsiWhiteSpace.class};
-    private static final Class[] WS_COMMENTS = {PsiWhiteSpace.class, PsiComment.class};
+    @SuppressWarnings("unchecked")
+    private static final Class<PsiElement>[] WS = new Class[]{PsiWhiteSpace.class};
+    @SuppressWarnings("unchecked")
+    private static final Class<PsiElement>[] WS_COMMENTS = new Class[]{PsiWhiteSpace.class, PsiComment.class};
 
     public static PsiElement skipWhitespacesBackward(@Nullable PsiElement element) {
         return PsiTreeUtil.skipSiblingsBackward(element, WS);
