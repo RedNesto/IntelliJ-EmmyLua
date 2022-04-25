@@ -312,6 +312,12 @@ project(":") {
             }
         }
 
+        compileTestKotlin {
+            kotlinOptions {
+                jvmTarget = buildVersionData.jvmTarget
+            }
+        }
+
         patchPluginXml {
             dependsOn("installEmmyDebugger")
             sinceBuild.set(buildVersionData.sinceBuild)

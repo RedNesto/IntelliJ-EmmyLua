@@ -22,6 +22,8 @@ import com.tang.intellij.lua.search.SearchContext
 
 class TyTuple(val list: List<ITy>) : Ty(TyKind.Tuple) {
 
+    constructor(vararg types: ITy) : this(types.toList())
+
     val size: Int get() {
         return list.size
     }

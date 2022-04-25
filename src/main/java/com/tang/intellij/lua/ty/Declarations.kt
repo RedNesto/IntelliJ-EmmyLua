@@ -56,7 +56,9 @@ fun inferReturnTy(owner: LuaFuncBodyOwner, searchContext: SearchContext): ITy {
         }
     }
 
-    return inferReturnTyInner(owner, searchContext)
+    return searchContext.withIndex(-1) {
+        inferReturnTyInner(owner, searchContext)
+    }
 }
 
 private fun inferReturnTyInner(owner: LuaFuncBodyOwner, searchContext: SearchContext): ITy {
