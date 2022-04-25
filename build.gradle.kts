@@ -43,10 +43,10 @@ data class BuildData(
 val buildDataList = listOf(
     BuildData(
         ideaSDKShortVersion = "221",
-        ideaSDKVersion = "221.3427.89-EAP-SNAPSHOT",
+        ideaSDKVersion = "221.5080.210",
         sinceBuild = "221",
         untilBuild = "221.*",
-        pluginVerifierIdeVersions = setOf("221.3427.89")
+        pluginVerifierIdeVersions = setOf("221.5080.210")
     ),
     BuildData(
         ideaSDKShortVersion = "213",
