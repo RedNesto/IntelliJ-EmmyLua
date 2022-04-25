@@ -27,7 +27,7 @@ import com.tang.intellij.lua.comment.psi.LuaDocTagField
 import com.tang.intellij.lua.editor.completion.LuaDocumentationLookupElement
 import com.tang.intellij.lua.psi.*
 import com.tang.intellij.lua.search.SearchContext
-import com.tang.intellij.lua.stubs.index.LuaClassIndex
+import com.tang.intellij.lua.stubs.index.*
 import com.tang.intellij.lua.ty.*
 
 /**
@@ -68,7 +68,17 @@ class LuaDocumentationProvider : AbstractDocumentationProvider(), DocumentationP
     override fun getDocumentationElementForLink(psiManager: PsiManager, link: String, context: PsiElement?): PsiElement? {
         val searchContext = context?.let(SearchContext.Companion::get)
             ?: SearchContext.get(psiManager.project)
-        return LuaClassIndex.find(link, searchContext)
+        val clazz = LuaClassIndex.find(link, searchContext)
+        if (clazz != null) {
+            return clazz
+        }
+
+        val globalMember = LuaClassMemberIndex.find(TyClass.G, link, searchContext)
+        if (globalMember != null) {
+            return globalMember
+        }
+
+        return null
     }
 
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
