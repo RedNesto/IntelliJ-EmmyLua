@@ -19,15 +19,18 @@ package com.tang.intellij.lua.codeInsight.intention
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
+import com.intellij.refactoring.suggested.endOffset
 import com.tang.intellij.lua.psi.*
 
 class ComputeConstantValueIntention : BaseIntentionAction() {
+
     override fun getFamilyName() = "Compute constant value"
 
     override fun isAvailable(project: Project, editor: Editor, psiFile: PsiFile): Boolean {
         val expr = LuaPsiTreeUtil.findElementOfClassAtOffset(psiFile, editor.caretModel.offset, LuaExpr::class.java, false)
-        if (expr is LuaBinaryExpr) {
+        if (expr is LuaBinaryExpr || (expr is LuaLiteralExpr && expr.kind == LuaLiteralKind.Hash)) {
             val result = ExpressionUtil.compute(expr)
             text = "Compute constant value of ${expr.text}"
             return result != null
@@ -37,7 +40,7 @@ class ComputeConstantValueIntention : BaseIntentionAction() {
 
     override fun invoke(project: Project, editor: Editor, psiFile: PsiFile) {
         val expr = LuaPsiTreeUtil.findElementOfClassAtOffset(psiFile, editor.caretModel.offset, LuaExpr::class.java, false)
-        if (expr is LuaBinaryExpr) {
+        if (expr is LuaBinaryExpr || (expr is LuaLiteralExpr && expr.kind == LuaLiteralKind.Hash)) {
             val result = ExpressionUtil.compute(expr)
             if (result != null) {
                 when (result.kind) {
@@ -47,8 +50,14 @@ class ComputeConstantValueIntention : BaseIntentionAction() {
                         val new = LuaElementFactory.createLiteral(project, result.string)
                         expr.replace(new)
                     }
+                    ComputeKind.Hash -> {
+                        val new = LuaElementFactory.createLiteral(project, "0x" + result.hashValue.toString(16))
+                        val replacement = expr.replace(new)
+                        PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document)
+                        editor.document.insertString(replacement.endOffset, " --[[${result.sValue}]]")
+                    }
                     ComputeKind.String -> {
-                        val new = LuaElementFactory.createLiteral(project, "[[${result.string}]]")
+                        val new = LuaElementFactory.createLiteral(project, "[[${result.sValue}]]")
                         expr.replace(new)
                     }
                     ComputeKind.Other -> {

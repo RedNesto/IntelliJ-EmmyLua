@@ -28,10 +28,13 @@ data class ComputeResult(val kind: ComputeKind,
             val int = nValue.toInt()
             if (int.compareTo(nValue) == 0) int.toString() else nValue.toString()
         }
+        ComputeKind.Hash -> hashValue.toString()
         ComputeKind.String -> sValue
         ComputeKind.Bool -> bValue.toString()
         else -> sValue
     }
+
+    val hashValue: UInt get() = java.lang.Float.floatToIntBits(nValue).toUInt()
 }
 
 enum class ComputeKind {
@@ -45,11 +48,11 @@ class ExpressionUtil {
             return when (expr) {
                 is LuaLiteralExpr -> {
                     when (expr.kind) {
-                        LuaLiteralKind.String -> ComputeResult(ComputeKind.String, false, 0f, expr.stringValue)
-                        LuaLiteralKind.Hash -> ComputeResult(ComputeKind.Hash, false, 0f, "") // TODO get hash by string value
-                        LuaLiteralKind.Bool -> ComputeResult(ComputeKind.Bool, expr.boolValue)
-                        LuaLiteralKind.Number -> ComputeResult(ComputeKind.Number, false, expr.numberValue)
-                        LuaLiteralKind.Nil -> ComputeResult(ComputeKind.Nil, false, 0f, "nil")
+                        LuaLiteralKind.String -> ComputeResult(ComputeKind.String, sValue = expr.stringValue)
+                        LuaLiteralKind.Hash -> ComputeResult(ComputeKind.Hash, nValue = ooatHashAsFloat(expr.stringValue), sValue = expr.stringValue)
+                        LuaLiteralKind.Bool -> ComputeResult(ComputeKind.Bool, bValue = expr.boolValue)
+                        LuaLiteralKind.Number -> ComputeResult(ComputeKind.Number, nValue = expr.numberValue)
+                        LuaLiteralKind.Nil -> ComputeResult(ComputeKind.Nil, sValue = "nil")
                         else -> null
                     }
                 }
@@ -64,8 +67,28 @@ class ExpressionUtil {
                     val inner = expr.expr
                     if (inner != null) compute(inner) else null
                 }
-                else -> return ComputeResult(ComputeKind.Other, true, 0f, "", expr)
+                else -> return ComputeResult(ComputeKind.Other, true, expr = expr)
             }
+        }
+
+        fun ooatHash(str: String): UInt {
+            var hash = 0u
+            val bytes = str.lowercase().toByteArray(Charsets.UTF_8)
+            for (char in bytes) {
+                hash += char.toUInt()
+                hash += hash shl 10
+                hash = hash xor (hash shr 6)
+            }
+
+            hash += hash shl 3
+            hash = hash xor (hash shr 11)
+            hash += hash shl 15
+            println("${hash}, ${java.lang.Float.intBitsToFloat(hash.toInt())}, ${java.lang.Float.floatToIntBits(java.lang.Float.intBitsToFloat(hash.toInt())).toUInt()}")
+            return hash
+        }
+
+        fun ooatHashAsFloat(str: String): Float {
+            return java.lang.Float.intBitsToFloat(ooatHash(str).toInt())
         }
 
         private fun calcBinary(l: ComputeResult, r: ComputeResult, op: IElementType): ComputeResult? {
@@ -84,35 +107,83 @@ class ExpressionUtil {
                 }
                 // +
                 LuaTypes.PLUS -> {
-                    n = l.nValue + r.nValue
-                    isValid = l.kind == ComputeKind.Number && r.kind == ComputeKind.Number
+                    if (l.kind == ComputeKind.Number && r.kind == ComputeKind.Number) {
+                        n = l.nValue + r.nValue
+                        isValid = true
+                    } else if (l.kind == ComputeKind.Hash && r.kind == ComputeKind.Hash) {
+                        n = java.lang.Float.intBitsToFloat((l.hashValue + r.hashValue).toInt())
+                        k = ComputeKind.Number
+                        isValid = true
+                    } else {
+                        isValid = false
+                    }
                 }
                 // -
                 LuaTypes.MINUS -> {
-                    n = l.nValue - r.nValue
-                    isValid = l.kind == ComputeKind.Number && r.kind == ComputeKind.Number
+                    if (l.kind == ComputeKind.Number && r.kind == ComputeKind.Number) {
+                        n = l.nValue - r.nValue
+                        isValid = true
+                    } else if (l.kind == ComputeKind.Hash && r.kind == ComputeKind.Hash) {
+                        n = java.lang.Float.intBitsToFloat((l.hashValue - r.hashValue).toInt())
+                        k = ComputeKind.Number
+                        isValid = true
+                    } else {
+                        isValid = false
+                    }
                 }
                 // *
                 LuaTypes.MULT -> {
-                    n = l.nValue * r.nValue
-                    isValid = l.kind == ComputeKind.Number && r.kind == ComputeKind.Number
+                    if (l.kind == ComputeKind.Number && r.kind == ComputeKind.Number) {
+                        n = l.nValue * r.nValue
+                        isValid = true
+                    } else if (l.kind == ComputeKind.Hash && r.kind == ComputeKind.Hash) {
+                        n = java.lang.Float.intBitsToFloat((l.hashValue * r.hashValue).toInt())
+                        k = ComputeKind.Number
+                        isValid = true
+                    } else {
+                        isValid = false
+                    }
                 }
                 // /
                 LuaTypes.DIV -> {
-                    n = l.nValue / r.nValue
-                    isValid = l.kind == ComputeKind.Number && r.kind == ComputeKind.Number
-                    isValid = isValid && r.nValue != 0f
+                    if (l.kind == ComputeKind.Number && r.kind == ComputeKind.Number) {
+                        n = l.nValue / r.nValue
+                        isValid = r.nValue != 0f
+                    } else if (l.kind == ComputeKind.Hash && r.kind == ComputeKind.Hash) {
+                        n = l.hashValue.toFloat() / r.hashValue.toFloat()
+                        k = ComputeKind.Number
+                        isValid = r.hashValue != 0u
+                    } else {
+                        isValid = false
+                    }
                 }
                 // //
                 LuaTypes.DOUBLE_DIV -> {
-                    n = l.nValue / r.nValue
-                    n = n.toInt().toFloat()
-                    isValid = l.kind == ComputeKind.Number && r.kind == ComputeKind.Number
+                    if (l.kind == ComputeKind.Number && r.kind == ComputeKind.Number) {
+                        n = l.nValue / r.nValue
+                        isValid = r.nValue != 0f
+                        n = n.toInt().toFloat()
+                    } else if (l.kind == ComputeKind.Hash && r.kind == ComputeKind.Hash) {
+                        n = java.lang.Float.intBitsToFloat((l.hashValue / r.hashValue).toInt())
+                        k = ComputeKind.Number
+                        isValid = r.hashValue != 0u
+                        n = n.toInt().toFloat()
+                    } else {
+                        isValid = false
+                    }
                 }
                 // %
                 LuaTypes.MOD -> {
-                    n = l.nValue % r.nValue
-                    isValid = l.kind == ComputeKind.Number && r.kind == ComputeKind.Number
+                    if (l.kind == ComputeKind.Number && r.kind == ComputeKind.Number) {
+                        n = l.nValue % r.nValue
+                        isValid = true
+                    } else if (l.kind == ComputeKind.Hash && r.kind == ComputeKind.Hash) {
+                        n = java.lang.Float.intBitsToFloat((l.hashValue % r.hashValue).toInt())
+                        k = ComputeKind.Number
+                        isValid = true
+                    } else {
+                        isValid = false
+                    }
                 }
                 // ..
                 LuaTypes.CONCAT -> {
@@ -130,6 +201,7 @@ class ExpressionUtil {
             b = b || when (k) {
                 ComputeKind.Other,
                 ComputeKind.Number,
+                ComputeKind.Hash,
                 ComputeKind.String -> true
                 else -> false
             }
