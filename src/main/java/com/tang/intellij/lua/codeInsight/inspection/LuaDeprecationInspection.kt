@@ -21,15 +21,13 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parentOfType
 import com.tang.intellij.lua.comment.psi.LuaDocTagClass
 import com.tang.intellij.lua.comment.psi.LuaDocClassNameRef
 import com.tang.intellij.lua.comment.psi.LuaDocPsiElement
 import com.tang.intellij.lua.comment.psi.LuaDocVisitor
 import com.tang.intellij.lua.comment.psi.api.LuaComment
-import com.tang.intellij.lua.psi.LuaClassMember
-import com.tang.intellij.lua.psi.LuaIndexExpr
-import com.tang.intellij.lua.psi.LuaNameExpr
-import com.tang.intellij.lua.psi.LuaVisitor
+import com.tang.intellij.lua.psi.*
 
 class LuaDeprecationInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) = object : LuaVisitor() {
@@ -48,11 +46,14 @@ class LuaDeprecationInspection : LocalInspectionTool() {
         }
 
         private inline fun checkDeprecated(o: PsiElement, action: () -> Unit) {
-            val resolve = o.reference?.resolve() ?: o
+            val resolve = o.reference?.resolve() ?: return
             val isDeprecated = when (resolve) {
                 is LuaClassMember -> resolve.isDeprecated
                 is LuaDocTagClass -> resolve.isDeprecated
-                else -> false
+                else -> {
+                    val parentOfType = resolve.parentOfType<LuaDeclaration>(true)
+                    parentOfType?.comment?.isDeprecated == true
+                }
             }
             if (isDeprecated) action()
         }

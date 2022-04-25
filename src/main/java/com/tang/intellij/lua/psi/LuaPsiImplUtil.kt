@@ -617,5 +617,13 @@ fun isDeprecated(member: LuaClassMember): Boolean {
         if (comment != null)
             return comment.isDeprecated
     }
+
+    val parentDeclaration = PsiTreeUtil.getParentOfType(member, LuaDeclaration::class.java)
+    if (parentDeclaration != null && PsiTreeUtil.getDepth(member, parentDeclaration) <= 3) {
+        val comment = parentDeclaration.comment
+        if (comment != null)
+            return comment.isDeprecated
+    }
+
     return false
 }

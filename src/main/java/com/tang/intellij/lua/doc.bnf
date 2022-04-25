@@ -74,6 +74,7 @@
         TAG_NAME_GENERIC = 'generic'
         TAG_NAME_ALIAS = 'alias'
         TAG_NAME_SUPPRESS = 'suppress'
+        TAG_NAME_DEPRECATED = 'deprecated'
   ]
   implements("tag.*") = [
     "com.tang.intellij.lua.comment.psi.LuaDocTag"
@@ -96,6 +97,7 @@ private doc_item ::= '@' (tag_param
     | tag_overload
     | tag_see
     | tag_def
+    | tag_deprecated
     | access_modifier
     | tag_generic_list)
 
@@ -317,5 +319,9 @@ tag_alias ::= TAG_NAME_ALIAS ID ty {
 }
 
 tag_suppress ::= TAG_NAME_SUPPRESS ID (',' ID)* {
+    pin = 1
+}
+
+tag_deprecated ::= TAG_NAME_DEPRECATED STRING? {
     pin = 1
 }

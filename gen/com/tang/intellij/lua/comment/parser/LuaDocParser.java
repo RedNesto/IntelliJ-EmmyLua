@@ -1,15 +1,108 @@
 // This is a generated file. Not intended for manual editing.
 package com.tang.intellij.lua.comment.parser;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static com.tang.intellij.lua.comment.psi.LuaDocTypes.*;
-import static com.tang.intellij.lua.psi.LuaParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.ACCESS_MODIFIER;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.ARR;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.ARR_TY;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.AT;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.CLASS_NAME_REF;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.COMMA;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.COMMENT_STRING;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.DASHES;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.EXTENDS;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.FUN;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.FUNCTION_PARAM;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.FUNCTION_TY;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.GENERAL_TY;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.GENERIC_DEF;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.GENERIC_TY;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.GT;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.ID;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.LCURLY;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.LPAREN;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.LT;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.OR;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.PARAM_NAME_REF;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.PAR_TY;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.PRIVATE;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.PROTECTED;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.PUBLIC;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.RCURLY;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.RPAREN;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.SHARP;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.STRING;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.STRING_BEGIN;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.STRING_LITERAL;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.STRING_LITERAL_TY;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TABLE_DEF;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TABLE_FIELD;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TABLE_TY;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_ALIAS;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_CLASS;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_DEF;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_DEPRECATED;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_FIELD;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_GENERIC_LIST;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_LAN;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_ALIAS;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_CLASS;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_DEPRECATED;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_FIELD;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_GENERIC;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_LANGUAGE;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_MODULE;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_NAME;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_OVERLOAD;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_PARAM;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_PRIVATE;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_PROTECTED;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_PUBLIC;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_RETURN;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_SEE;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_SUPPRESS;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_TYPE;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_NAME_VARARG;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_OVERLOAD;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_PARAM;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_RETURN;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_SEE;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_SUPPRESS;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_TYPE;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TAG_VARARG;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TY;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.TYPE_LIST;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.UNION_TY;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.VARARG;
+import static com.tang.intellij.lua.comment.psi.LuaDocTypes.VARARG_PARAM;
+import static com.tang.intellij.lua.psi.LuaParserUtil.TRUE_CONDITION;
+import static com.tang.intellij.lua.psi.LuaParserUtil._AND_;
+import static com.tang.intellij.lua.psi.LuaParserUtil._COLLAPSE_;
+import static com.tang.intellij.lua.psi.LuaParserUtil._LEFT_;
+import static com.tang.intellij.lua.psi.LuaParserUtil._NONE_;
+import static com.tang.intellij.lua.psi.LuaParserUtil._NOT_;
+import static com.tang.intellij.lua.psi.LuaParserUtil.adapt_builder_;
+import static com.tang.intellij.lua.psi.LuaParserUtil.addVariant;
+import static com.tang.intellij.lua.psi.LuaParserUtil.consumeToken;
+import static com.tang.intellij.lua.psi.LuaParserUtil.consumeTokenSmart;
+import static com.tang.intellij.lua.psi.LuaParserUtil.consumeTokens;
+import static com.tang.intellij.lua.psi.LuaParserUtil.create_token_set_;
+import static com.tang.intellij.lua.psi.LuaParserUtil.current_position_;
+import static com.tang.intellij.lua.psi.LuaParserUtil.empty_element_parsed_guard_;
+import static com.tang.intellij.lua.psi.LuaParserUtil.enter_section_;
+import static com.tang.intellij.lua.psi.LuaParserUtil.exit_section_;
+import static com.tang.intellij.lua.psi.LuaParserUtil.leftMarkerIs;
+import static com.tang.intellij.lua.psi.LuaParserUtil.nextTokenIs;
+import static com.tang.intellij.lua.psi.LuaParserUtil.nextTokenIsSmart;
+import static com.tang.intellij.lua.psi.LuaParserUtil.recursion_guard_;
+import static com.tang.intellij.lua.psi.LuaParserUtil.report_error_;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class LuaDocParser implements PsiParser, LightPsiParser {
@@ -161,6 +254,7 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   //     | tag_overload
   //     | tag_see
   //     | tag_def
+  //     | tag_deprecated
   //     | access_modifier
   //     | tag_generic_list)
   static boolean doc_item(PsiBuilder b, int l) {
@@ -186,6 +280,7 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   //     | tag_overload
   //     | tag_see
   //     | tag_def
+  //     | tag_deprecated
   //     | access_modifier
   //     | tag_generic_list
   private static boolean doc_item_1(PsiBuilder b, int l) {
@@ -203,6 +298,7 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
     if (!r) r = tag_overload(b, l + 1);
     if (!r) r = tag_see(b, l + 1);
     if (!r) r = tag_def(b, l + 1);
+    if (!r) r = tag_deprecated(b, l + 1);
     if (!r) r = access_modifier(b, l + 1);
     if (!r) r = tag_generic_list(b, l + 1);
     return r;
@@ -592,6 +688,27 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   private static boolean tag_def_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tag_def_1")) return false;
     comment_string(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // TAG_NAME_DEPRECATED STRING?
+  public static boolean tag_deprecated(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_deprecated")) return false;
+    if (!nextTokenIs(b, TAG_NAME_DEPRECATED)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, TAG_DEPRECATED, null);
+    r = consumeToken(b, TAG_NAME_DEPRECATED);
+    p = r; // pin = 1
+    r = r && tag_deprecated_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // STRING?
+  private static boolean tag_deprecated_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_deprecated_1")) return false;
+    consumeToken(b, STRING);
     return true;
   }
 

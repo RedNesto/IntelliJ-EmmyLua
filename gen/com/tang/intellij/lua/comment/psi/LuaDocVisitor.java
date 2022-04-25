@@ -1,12 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package com.tang.intellij.lua.comment.psi;
 
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.tang.intellij.lua.psi.LuaClassField;
-import com.tang.intellij.lua.psi.LuaClass;
 import com.tang.intellij.lua.psi.LuaTypeAlias;
+import org.jetbrains.annotations.NotNull;
 
 public class LuaDocVisitor extends PsiElementVisitor {
 
@@ -86,6 +85,10 @@ public class LuaDocVisitor extends PsiElementVisitor {
   }
 
   public void visitTagDef(@NotNull LuaDocTagDef o) {
+    visitTag(o);
+  }
+
+  public void visitTagDeprecated(@NotNull LuaDocTagDeprecated o) {
     visitTag(o);
   }
 
