@@ -40,7 +40,7 @@ class LuaAnnotator : Annotator {
 
     companion object {
         private val STD_MARKER = Key.create<Boolean>("lua.std.marker")
-        private val UPVALUE = HighlightSeverity("UPVALUE", HighlightSeverity.INFORMATION.myVal + 1)
+        private val UPVALUE = HighlightSeverity("UPVALUE", HighlightSeverity.INFORMATION.myVal - 1)
     }
 
     override fun annotate(psiElement: PsiElement, annotationHolder: AnnotationHolder) {
