@@ -101,6 +101,10 @@ class MatchFunctionSignatureInspection : StrictInspection() {
                         nArgs = i + 1
                         val typeInfo = concreteTypes.getOrNull(i)
                         if (typeInfo == null) {
+                            if (pi.ty.subTypeOf(Ty.NIL, searchContext, false)) {
+                                return@processArgs true
+                            }
+
                             val lastChild = call.lastChild.lastChild
                             if (lastChild !is PsiErrorElement) {
                                 myHolder.registerProblem(lastChild, "Missing argument: ${pi.name}: ${pi.ty}")
