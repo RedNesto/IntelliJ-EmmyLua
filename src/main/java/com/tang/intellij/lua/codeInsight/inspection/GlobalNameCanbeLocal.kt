@@ -21,9 +21,11 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
+import com.intellij.psi.util.PsiTreeUtil
 import com.tang.intellij.lua.psi.*
 import com.tang.intellij.lua.search.SearchContext
 
@@ -48,8 +50,12 @@ class GlobalNameCanbeLocal : LocalInspectionTool() {
                                 override fun getFamilyName() = "Append \"local\""
 
                                 override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-                                    val element = LuaElementFactory.createWith(project, "local ${stat.text}")
-                                    stat.replace(element)
+                                    val targetChild = when (val firstChild = stat.firstChild) {
+                                        is PsiComment -> PsiTreeUtil.skipWhitespacesAndCommentsForward(firstChild) ?: stat
+                                        else -> firstChild
+                                    }
+                                    val element = LuaElementFactory.createWith(project, "local ${targetChild.text}")
+                                    targetChild.replace(element)
                                 }
                             })
                         }
