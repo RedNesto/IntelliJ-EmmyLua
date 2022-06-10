@@ -19,14 +19,16 @@ package com.tang.intellij.lua.editor
 import com.intellij.lang.Language
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.childrenOfType
 import com.intellij.ui.breadcrumbs.BreadcrumbsProvider
 import com.tang.intellij.lua.lang.LuaLanguage
 import com.tang.intellij.lua.psi.*
 
 class LuaBreadcrumbsProvider : BreadcrumbsProvider {
-    override fun getLanguages(): Array<Language> {
-        return arrayOf(LuaLanguage.INSTANCE)
-    }
+
+    private val supportedLanguages: Array<Language> = arrayOf(LuaLanguage.INSTANCE)
+
+    override fun getLanguages(): Array<Language> = supportedLanguages
 
     private val MAX_LEN = 15
 
@@ -41,15 +43,13 @@ class LuaBreadcrumbsProvider : BreadcrumbsProvider {
     override fun getElementInfo(element: PsiElement): String {
         return when (element) {
             is LuaBlock -> {
-                val blockParent = element.parent
-                when (blockParent) {
+                when (val blockParent = element.parent) {
                     is LuaFuncBody ->{
-                        val parent2 = blockParent.parent
-                        when (parent2) {
+                        when (val parent2 = blockParent.parent) {
                             is LuaClassMethodDef -> "${parent2.classMethodName.text}${parent2.paramSignature}"
                             is LuaClosureExpr -> "function${parent2.paramSignature}"
-                            is LuaFuncDef -> "function${parent2.paramSignature}"
-                            is LuaLocalFuncDef -> "local function ${parent2.name}"
+                            is LuaFuncDef -> "function ${parent2.name}${parent2.paramSignature}"
+                            is LuaLocalFuncDef -> "local function ${parent2.name}${parent2.paramSignature}"
                             else -> "<?>"
                         }
                     }
@@ -73,6 +73,10 @@ class LuaBreadcrumbsProvider : BreadcrumbsProvider {
                     else -> "<?>"
                 }
             }
+            is LuaTableField -> element.fieldName ?: element.idExpr?.text
+                ?: element.parent?.childrenOfType<LuaTableField>()?.indexOf(element).toString()
+            is LuaLocalDef -> "local " + (element.nameList?.nameDefList?.joinToString { it.name } ?: "<?>")
+            is LuaAssignStat -> element.varExprList.exprList.joinToString { (it as? LuaNameExpr)?.name ?: "<?>" }
             else -> element.text
         }
     }
@@ -80,8 +84,10 @@ class LuaBreadcrumbsProvider : BreadcrumbsProvider {
     override fun acceptElement(element: PsiElement): Boolean {
         return when (element) {
             is LuaBlock -> true
+            is LuaTableField -> true
+            is LuaLocalDef -> true
+            is LuaAssignStat -> true
             else -> false
         }
     }
-
 }
