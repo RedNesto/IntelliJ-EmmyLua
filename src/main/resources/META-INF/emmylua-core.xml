@@ -117,6 +117,7 @@
         <fileTypeDetector implementation="com.tang.intellij.lua.lang.LuaFileTypeDetector"/>
         <customPasteProvider implementation="com.tang.intellij.lua.codeInsight.editorActions.StringLiteralPasteProvider"/>
         <extendWordSelectionHandler implementation="com.tang.intellij.lua.codeInsight.editorActions.StringSelectioner"/>
+        <lang.unwrapDescriptor language="Lua" implementationClass="com.tang.intellij.lua.codeInsight.unwrap.LuaUnwrapDescriptor"/>
 
         <!--highlighting-->
         <annotator language="Lua" implementationClass="com.tang.intellij.lua.annotator.LuaAnnotator" />
