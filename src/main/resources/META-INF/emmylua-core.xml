@@ -232,6 +232,10 @@
             <category>Lua</category>
             <className>com.tang.intellij.lua.codeInsight.intention.ComputeConstantValueIntention</className>
         </intentionAction>
+        <intentionAction>
+            <category>Lua</category>
+            <className>com.tang.intellij.lua.codeInsight.intention.SwitchQuotesIntention</className>
+        </intentionAction>
 
         <lang.inspectionSuppressor language="Lua" implementationClass="com.tang.intellij.lua.codeInsight.inspection.LuaSuppressManager"/>
 
