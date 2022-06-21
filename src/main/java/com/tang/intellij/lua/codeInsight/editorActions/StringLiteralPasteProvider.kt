@@ -60,9 +60,15 @@ class StringLiteralPasteProvider : PasteProvider {
         val editor = dataContext.getData(CommonDataKeys.EDITOR)
         val file = dataContext.getData(CommonDataKeys.PSI_FILE)
         if (editor != null && file != null) {
-            val element = file.findElementAt(editor.caretModel.offset)
-            if (element != null && element.node.elementType == LuaTypes.STRING)
-                return element
+            val element = file.findElementAt(editor.selectionModel.selectionStart)
+            if (element != null && element.node.elementType == LuaTypes.STRING) {
+                val selectionStart = editor.selectionModel.selectionStart
+                val selectionEnd = editor.selectionModel.selectionEnd
+                val elementRange = element.textRange
+                if (selectionStart > elementRange.startOffset || selectionEnd < elementRange.endOffset) {
+                    return element
+                }
+            }
         }
         return null
     }
