@@ -113,7 +113,11 @@ private fun MarkdownNode.toHtml(): String {
                 val label = node.child(MarkdownElementTypes.LINK_TEXT)?.toHtml()
                 val destination = node.child(MarkdownElementTypes.LINK_DESTINATION)?.text
                 if (label != null && destination != null) {
-                    sb.append("<a href=\"$destination\">$label</a>")
+                    if (destination.startsWith('#')) {
+                        DocumentationManagerUtil.createHyperlink(sb, destination.substring(1), label, true)
+                    } else {
+                        sb.append("<a href=\"$destination\">$label</a>")
+                    }
                 }
                 else {
                     sb.append(node.text)
