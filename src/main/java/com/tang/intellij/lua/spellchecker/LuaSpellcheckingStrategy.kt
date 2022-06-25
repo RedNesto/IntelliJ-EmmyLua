@@ -21,9 +21,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.spellchecker.inspections.PlainTextSplitter
 import com.intellij.spellchecker.tokenizer.*
 import com.tang.intellij.lua.lang.LuaLanguage
-import com.tang.intellij.lua.psi.LuaLiteralExpr
-import com.tang.intellij.lua.psi.LuaLiteralKind
-import com.tang.intellij.lua.psi.kind
+import com.tang.intellij.lua.psi.*
 
 class LuaSpellcheckingStrategy : SpellcheckingStrategy() {
     override fun isMyContext(element: PsiElement): Boolean {
@@ -42,7 +40,7 @@ class LuaSpellcheckingStrategy : SpellcheckingStrategy() {
 private object IdentifierOwnerTokenizer : PsiIdentifierOwnerTokenizer() {
     override fun tokenize(element: PsiNameIdentifierOwner, consumer: TokenConsumer) {
         val id = element.nameIdentifier
-        if (id !is LuaLiteralExpr)
+        if (id !is LuaLiteralExpr && (element is LuaDeclaration || element is LuaNameDef))
             super.tokenize(element, consumer)
     }
 }
