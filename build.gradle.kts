@@ -19,7 +19,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import java.io.ByteArrayOutputStream
 
 plugins {
-    id("org.jetbrains.intellij").version("1.5.3")
+    id("org.jetbrains.intellij").version("1.7.0")
     id("org.jetbrains.kotlin.jvm").version("1.6.21")
     id("de.undercouch.download").version("5.0.4")
 }
@@ -41,6 +41,12 @@ data class BuildData(
 )
 
 val buildDataList = listOf(
+    BuildData(
+        ideaSDKShortVersion = "222",
+        ideaSDKVersion = "222.3345.47-EAP-SNAPSHOT",
+        sinceBuild = "222",
+        untilBuild = "222.*",
+    ),
     BuildData(
         ideaSDKShortVersion = "221",
         ideaSDKVersion = "221.5080.210",
@@ -228,7 +234,6 @@ task("installEmmyDebugger", type = Copy::class) {
 
 project(":") {
     repositories {
-        maven(url = "https://www.jetbrains.com/intellij-repository/releases")
         mavenCentral()
     }
 

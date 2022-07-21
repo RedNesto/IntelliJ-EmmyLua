@@ -23,6 +23,7 @@ import com.intellij.ide.DataManager
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.ide.plugins.PluginUtil
 import com.intellij.idea.IdeaLogger
+import com.intellij.notification.BrowseNotificationAction
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationListener
 import com.intellij.notification.NotificationType
@@ -200,7 +201,7 @@ class GitHubErrorReporter : LuaErrorReportSubmitter() {
 					.notify(project)
 			} else {
 				notifGroup.createNotification(title, reportInfo.linkText, NotificationType.INFORMATION)
-					.setListener(NotificationListener.URL_OPENING_LISTENER)
+					.addAction(BrowseNotificationAction(title, reportInfo.linkText))
 					.setImportant(false)
 					.notify(project)
 			}
