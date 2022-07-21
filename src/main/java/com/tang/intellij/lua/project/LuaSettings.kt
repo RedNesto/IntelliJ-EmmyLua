@@ -25,6 +25,7 @@ import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 import com.tang.intellij.lua.Constants
 import com.tang.intellij.lua.lang.LuaLanguageLevel
+import com.tang.intellij.lua.ty.Ty
 import java.nio.charset.Charset
 
 /**
@@ -78,6 +79,11 @@ class LuaSettings : PersistentStateComponent<LuaSettings> {
      * Lua language level
      */
     var languageLevel = LuaLanguageLevel.LUA53
+
+    init {
+        // Initialize Ty early to avoid deadlocks during indexing
+        Ty.UNKNOWN
+    }
 
     override fun getState(): LuaSettings? {
         return this
