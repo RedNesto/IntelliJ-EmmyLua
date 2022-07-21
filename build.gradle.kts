@@ -37,7 +37,7 @@ data class BuildData(
     val bunch: String = ideaSDKShortVersion,
     // https://github.com/JetBrains/gradle-intellij-plugin/issues/403#issuecomment-542890849
     val instrumentCodeCompilerVersion: String = ideaSDKVersion,
-    val pluginVerifierIdeVersions: Set<String> = setOf(ideaSDKVersion)
+    val pluginVerifierIdeVersions: Set<String> = setOf(ideaSDKVersion.substringBefore('-'))
 )
 
 val buildDataList = listOf(
